@@ -1,0 +1,7 @@
+project:
+    name: Salesforce-Bulk-Edit
+    package:
+        name:  Salesforce-Bulk-Edit
+        api_version: '42.0'
+    dependencies:
+
