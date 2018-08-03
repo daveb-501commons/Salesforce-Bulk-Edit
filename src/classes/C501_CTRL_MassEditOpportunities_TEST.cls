@@ -37,20 +37,54 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         // set up intial test data
         Account acc = new Account(name='Individual Test User');
         insert acc;
-        User user = new User(Lastname='Testy');
+
+        String orgId = UserInfo.getOrganizationId();
+        Profile profile = [SELECT Id FROM Profile WHERE Name='System Administrator'];
+        Integer RandomId=Integer.valueOf(Math.rint(Math.random()*1000000));
+        String dateString=String.valueof(Datetime.now()).replace(' ','').replace(':','').replace('-','') ;
+        String uniqueName=orgId+dateString+RandomId;
+        User user = new User(firstname = 'ABC',
+            lastName = 'XYZ',
+            email = uniqueName + '@test' + orgId + '.org',
+            Username = uniqueName + '@test' + orgId + '.org',
+            EmailEncodingKey = 'ISO-8859-1',
+            Alias = uniqueName.substring(18, 23),
+            TimeZoneSidKey = 'America/Los_Angeles',
+            LocaleSidKey = 'en_US',
+            LanguageLocaleKey = 'en_US',
+            ProfileId = profile.Id
+        ); 
         insert user;
+
         FGM_Base__Program__c cmp = new FGM_Base__Program__c(name='Test FGM_Base__Program__c', FGM_Base__Active__c=true);
         insert cmp;
+
         //User account = new User(name='account1', FGM_Base__Program__c=cmp.Id);
         list<Opportunity> listAmounts = new list<Opportunity>();   
         integer cAmounts = 5;     
         for (integer i = 0; i < cAmounts; i++) {
             Opportunity amount = new Opportunity(
+                
+                // Request Information
                 AccountId=acc.id, 
-                OwnerId=user.Id,
+                Name='Opportunity Name',
+                CloseDate=System.today(),
+                StageName='Active',
+
+                // Program
+                FGM_Base__Lead_Program__c = cmp.id,
+
+                // Financials
+                Amount = 1.5,
+
+                // Timeframe
                 FGM_Base__Start_Date__c=System.today(), 
+
+                // Optionals
+                OwnerId=user.Id,
                 Status__c='Confirmed'
-                );
+
+            );
             listAmounts.add(amount);
         }                       
         insert listAmounts;
@@ -67,10 +101,10 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         System.AssertEquals(user.Id, ctrl.ownerid);
         System.Assert(ctrl.listSOPrograms.size() > 1);
         System.AssertEquals(2, ctrl.listSOOwners.size());
-        System.AssertEquals(cAmounts + ctrl.cEmptyOpportunityRecords, ctrl.listOpportunities.size());
+        System.AssertEquals(cAmounts, ctrl.listOpportunities.size());
         
         ctrl.AddMoreEmptyRows();
-        System.AssertEquals(cAmounts + (2 * ctrl.cEmptyOpportunityRecords), ctrl.listOpportunities.size());
+        System.AssertEquals(cAmounts + ctrl.cEmptyOpportunityRecords, ctrl.listOpportunities.size());
         System.AssertEquals(true, ctrl.fHasListOpportunities);
         System.Assert(ctrl.Cancel() == null);
         System.AssertEquals(0, ctrl.numberOfRecordsDirty);
@@ -85,7 +119,7 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         ctrl.ChangeProgram();
         ctrl.ownerid = user.Id;
         ctrl.ChangeOwner();
-        System.AssertEquals(cAmounts + ctrl.cEmptyOpportunityRecords, ctrl.listOpportunities.size());
+        ctrl.AddMoreEmptyRows();
         System.AssertEquals(cAmounts + ctrl.cEmptyOpportunityRecords, ctrl.listOpportunities.size());
         System.AssertEquals(0, ctrl.numberOfRecordsDirty);
         
@@ -94,7 +128,7 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         ctrl.OpportunitiesRecordModified();
         System.AssertEquals(1, ctrl.setOpportunitiesIdDirty.size());
         
-        Opportunity opp = ctrl.listOpportunities.get(5);
+        Opportunity opp = ctrl.listOpportunities.get(ctrl.listOpportunities.size() - 1);
         opp.OwnerId = user.id;
         opp.AccountId = acc.id;
         opp.Status__c = 'Completed';
@@ -109,10 +143,19 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         ctrl.SaveOpportunities();
         system.debug(ctrl.strSaveResults);
         System.Assert(ctrl.strSaveResults.startsWith('Error'));
-        opp.Amount = 2.5;
+        ctrl.ChangeOwner();
         ctrl.SaveAndCloseOpportunities();      
         System.AssertEquals(0, ctrl.numberOfRecordsDirty);
         
     }
 
+    private static testMethod void testPageMessagesController() {
+        ApexPages.addMessage(new ApexPages.message(ApexPages.severity.WARNING,'summary'));
+        C501_UTIL_PageMessages_CTRL controller = new C501_UTIL_PageMessages_CTRL();
+        List<C501_UTIL_PageMessages_CTRL.Message> messages = controller.getPageMessages();
+
+        System.assertEquals(1, messages.size(), 'There should be one error on the page.');
+        System.assertEquals(Label.PageMessagesWarning, messages[0].getSeverityLabel(), 'The label should be WARNING.');
+        System.assertEquals('warning', messages[0].getSeverityTheme(), 'The theme should be warning.');
+    }
 }

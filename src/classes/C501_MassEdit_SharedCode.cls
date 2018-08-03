@@ -69,51 +69,16 @@ global with sharing class C501_MassEdit_SharedCode {
         return listSO;
     }
    
-       // global code to verify the passed in UserId is valid, as well as the email
-    // exists on the User record.
-    global static boolean isValidUserIdAndEmail(ID userId, string strEmail) {
-        string strSoql = 'select Id from User where Id = :userId ';
-        list<User> listCon = Database.Query(strSoql); 
-        return listCon.size() > 0;
-    }
-
-    // global code to lookup an existing user
-    // listStrFields are optional fields to include in the soql call
-    global static list<User> LookupOwner(User user, list<string> listStrFields) {    
-        // let's see if we can find any matching Users.
-        // we need to use dynamic soql, since we allow the user to modify the FieldSet of fields to edit.
-        string strSoql = 'select ';
-        string strComma = '';
-        if (listStrFields == null) {
-            strSoql += 'Id';
-        } else {
-            for (string strF : listStrFields) {
-                strSoql += strComma + strF;
-                strComma = ', ';
-            }
-        }        
-        strSoql += ' from User ';
-        strSoql += ' limit 999 ';      
-        list<User> listCon = Database.Query(strSoql); 
-        return listCon;
-    }
-
-    // global utility to escape a string.
-    global static string StrEscape(string str) {
-        if (str == null) return null;
-        return string.escapeSingleQuotes(str);
-    }
-    
-    // global utility used to detect whether the Non Profit Starter Pack is installed in this instance.
-    private static boolean fCheckedForNPSP = false;
-    global static boolean IsNPSPInstalled {
+    // global utility used to detect whether the Foundation Grant Manager (Foundation Connect) is installed in this instance.
+    private static boolean fCheckedForFGM = false;
+    global static boolean IsFGMInstalled {
         get {
-            if (!fCheckedForNPSP) {
-                Schema.SObjectType token = Schema.getGlobalDescribe().get('npe01__OppPayment__c');
-                IsNPSPInstalled = (token != null);
-                fCheckedForNPSP = true;
+            if (!fCheckedForFGM) {
+                Schema.SObjectType token = Schema.getGlobalDescribe().get('FGM_Base__Lead_Program__c');
+                IsFGMInstalled = (token != null);
+                fCheckedForFGM = true;
             }
-            return IsNPSPInstalled;
+            return IsFGMInstalled;
         }
         set;
     }   
@@ -147,66 +112,9 @@ global with sharing class C501_MassEdit_SharedCode {
     * @param str token name 
     * @return token name, with namespace prefix, if required.
     ********************************************************************************************************/
-    global static string StrTokenNSPrefix(string str) {
+    global static string StrTokenFGMPrefix(string str) {
         if (getNamespace() == '') return str;
         str = getNamespace() + '__' + str;
         return str;
-    }
-  
-    // utility to verify all the specified fields are accessible to the current user.
-    // fields that are not accessible will have a pageMessage added to the current page
-    // so the warning is displayed to the user.
-    global static void testObjectFieldVisibility(string strObj, list<string>listStrField) {
-        
-        Map<String, Schema.SObjectType> gd;
-        Schema.DescribeSObjectResult sobjDescr;
-        Map<String, Schema.SObjectField> mapFieldDesc;
-        
-        // Obtaining the field name/token map for the object
-        gd = Schema.getGlobalDescribe();
-        if (gd != null)
-            sobjDescr = gd.get(strObj).getDescribe();
-        if (sobjDescr != null)
-            mapFieldDesc = sobjDescr.fields.getMap();
-        if (mapFieldDesc !=  null)
-            for (String strField : listStrField) {
-                // Check if the user has access on the each field
-                // note that fields in our own package must not have their prefix for the Describe Field Map  
-                Schema.SObjectField fld = mapFieldDesc.get(strField.replace(StrTokenNSPrefix(''), ''));     
-                if (fld != null && !fld.getDescribe().isAccessible()) {
-                    ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.FATAL, 'Field ' + strObj + '.' + strField +
-                        ' needs to have field level security enabled on the Site\'s Guest User profile. Please see the V4S Installation & Configuration Guide.'));
-                } 
-            }
-    }
-
-    /*******************************************************************************************************
-    * @description Static method checks if running user has field update access for a set of fields
-    * @param objectName the name of the object the field belongs to
-    * @param fieldNames the set of field names to check update access
-    * @return void
-    ********************************************************************************************************/
-    public static void checkUpdateAccessSites(String objectName, Set<String> fieldNames) {
-        // for backward compatibility with 1000's of nonprofit customers, we can
-        // only enforce create permissions on the Sites user for Users.
-        if (objectName == 'User') {
-            C501_UTIL_Describe.checkCreateAccess(objectName, fieldNames);
-        } else {
-            C501_UTIL_Describe.checkUpdateAccess(objectName, fieldNames);
-        }
-    }
-
-    /** Description: DML options to allow overriding duplicate rules to create users, while throwing
-    * exceptions for validation rules, required fields, etc.
-    */
-    private static Database.DMLOptions dmlDuplicateOptions {
-        get {
-            if (dmlDuplicateOptions == null) {
-                dmlDuplicateOptions = new Database.DMLOptions();
-                dmlDuplicateOptions.optAllOrNone = true;
-                dmlDuplicateOptions.DuplicateRuleHeader.allowSave = true;
-            }
-            return dmlDuplicateOptions;
-        }
     }
 }

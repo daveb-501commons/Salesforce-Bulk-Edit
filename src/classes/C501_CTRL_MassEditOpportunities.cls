@@ -260,9 +260,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
             }
             
             update listOpportunitiesUpdate;
-            
-            // Ensure the user can create the object 
-            C501_UTIL_Describe.checkObjectCreateAccess(C501_UTIL_Describe.StrTokenNSPrefix('Opportunity'));
+           
             insert listOpportunitiesCreate;
             
             strSaveResults = String.valueOf(listOpportunitiesCreate.size() + listOpportunitiesUpdate.size()) + ' ' + Label.labelMassEditSaveSuccess;

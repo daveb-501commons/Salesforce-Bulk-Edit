@@ -1,0 +1,62 @@
+[
+    {
+        "ClassName": "C501_CTRL_MassEditOpportunities_TEST", 
+        "StackTrace": null, 
+        "Stats": {
+            "duration": 1114
+        }, 
+        "TestTimestamp": "2018-08-03T16:01:57.000+0000", 
+        "Message": null, 
+        "Outcome": "Pass", 
+        "Children": null, 
+        "Method": "CodeCoverageTests"
+    }, 
+    {
+        "ClassName": "C501_CTRL_MassEditOpportunities_TEST", 
+        "StackTrace": null, 
+        "Stats": {
+            "duration": 15
+        }, 
+        "TestTimestamp": "2018-08-03T16:02:00.000+0000", 
+        "Message": null, 
+        "Outcome": "Pass", 
+        "Children": null, 
+        "Method": "testPageMessagesController"
+    }, 
+    {
+        "ClassName": "C501_MassEdit_SharedCode_TEST", 
+        "StackTrace": null, 
+        "Stats": {
+            "duration": 469
+        }, 
+        "TestTimestamp": "2018-08-03T16:01:57.000+0000", 
+        "Message": null, 
+        "Outcome": "Pass", 
+        "Children": null, 
+        "Method": "CodeCoverageTests"
+    }, 
+    {
+        "ClassName": "dlrs_FGM_Base_Contributing_ProgramsTest", 
+        "StackTrace": null, 
+        "Stats": {
+            "duration": 97
+        }, 
+        "TestTimestamp": "2018-08-03T16:01:57.000+0000", 
+        "Message": null, 
+        "Outcome": "Pass", 
+        "Children": null, 
+        "Method": "testTrigger"
+    }, 
+    {
+        "ClassName": "dlrs_FGM_Base_PaymentTest", 
+        "StackTrace": null, 
+        "Stats": {
+            "duration": 83
+        }, 
+        "TestTimestamp": "2018-08-03T16:01:57.000+0000", 
+        "Message": null, 
+        "Outcome": "Pass", 
+        "Children": null, 
+        "Method": "testTrigger"
+    }
+]

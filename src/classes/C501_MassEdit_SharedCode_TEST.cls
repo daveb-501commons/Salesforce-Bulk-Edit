@@ -31,71 +31,11 @@
 @isTest
 public with sharing class C501_MassEdit_SharedCode_TEST {
 
-    /*******************************************************************************************************
-    * @description test methods to test all permutations of the User Matching Rule.
-    * @return void
-    */ 
-    static testmethod void testUserMatchRule1() {
-    	testUserMatchRule('Firstname;Lastname;Email');
-    }
-    static testmethod void testUserMatchRule2() {
-    	testUserMatchRule('Firstname;Lastname');
-    }
-    static testmethod void testUserMatchRule3() {
-    	testUserMatchRule('Firstname;Email');
-    }
-    static testmethod void testUserMatchRule4() {
-    	testUserMatchRule('Lastname;Email');
-    }
-    static testmethod void testUserMatchRule5() {
-    	testUserMatchRule('');
-    }
-    static testmethod void testUserMatchRule6() {
-    	testUserMatchRule('Firstname;');
-    }
-    static testmethod void testUserMatchRule7() {
-    	testUserMatchRule('Lastname');
-    }
-    static testmethod void testUserMatchRule8() {
-    	testUserMatchRule('Email');
-    }
-    static void testUserMatchRule(string strRule) {
+    //==================== TEST METHOD(s) ======================================
+    private static testmethod void CodeCoverageTests() {
 
-		// test data
-		list<User> listCon = new list<User>();
-		listCon.add(new User(Firstname='Fred', Lastname='Smith', Email='fred@smith.com'));
-		listCon.add(new User(Firstname='Fred', Lastname='Smith', Email=null));
-		listCon.add(new User(Firstname='Fred', Lastname='Smith', Email='NOTfred@smith.com'));
-		listCon.add(new User(Firstname='NOTFred', Lastname='Smith', Email='fred@smith.com'));
-		listCon.add(new User(Firstname='Fred', Lastname='NOTSmith', Email='fred@smith.com'));
-		insert listCon;
-		
-        list<string> listStrFields = new list<string>{'Id', 'Firstname', 'Lastname', 'Email'};        
-		list<User> listCon2 = C501_MassEdit_SharedCode.LookupOwner(listCon[0], listStrFields);
-		
-		if (strRule == 'Firstname;Lastname;Email') {
-			system.assertEquals(1, listCon2.size());
-		}
-		if (strRule == 'Firstname;Email') {
-			system.assertEquals(2, listCon2.size());
-		}
-		if (strRule == 'Lastname;Email') {
-			system.assertEquals(2, listCon2.size());
-		}
-		if (strRule == 'Firstname;Lastname') {
-			system.assertEquals(3, listCon2.size());
-		}
-		if (strRule == 'Email') {
-			system.assertEquals(3, listCon2.size());
-		}
-		if (strRule == 'Firstname') {
-			system.assertEquals(4, listCon2.size());
-		}
-		if (strRule == 'Lastname') {
-			system.assertEquals(4, listCon2.size());
-		}
-		if (strRule == '') {  // we treat blank as 'Firstname;Lastname;Email'
-			system.assertEquals(1, listCon2.size());
-		}
+      System.AssertEquals(false, C501_MassEdit_SharedCode.IsFGMInstalled);
+      System.AssertEquals('', C501_MassEdit_SharedCode.getNamespace());
+      System.AssertEquals('str', C501_MassEdit_SharedCode.StrTokenFGMPrefix('str'));
     }
 }

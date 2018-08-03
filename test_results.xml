@@ -1,0 +1,7 @@
+<testsuite tests="5">
+  <testcase classname="C501_CTRL_MassEditOpportunities_TEST" name="CodeCoverageTests" time="1114" />
+  <testcase classname="C501_CTRL_MassEditOpportunities_TEST" name="testPageMessagesController" time="15" />
+  <testcase classname="C501_MassEdit_SharedCode_TEST" name="CodeCoverageTests" time="469" />
+  <testcase classname="dlrs_FGM_Base_Contributing_ProgramsTest" name="testTrigger" time="97" />
+  <testcase classname="dlrs_FGM_Base_PaymentTest" name="testTrigger" time="83" />
+</testsuite>

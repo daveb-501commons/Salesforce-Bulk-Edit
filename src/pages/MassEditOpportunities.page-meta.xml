@@ -4,4 +4,9 @@
     <availableInTouch>false</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
     <label>MassEditOpportunities</label>
+    <packageVersions>
+        <majorNumber>5</majorNumber>
+        <minorNumber>12</minorNumber>
+        <namespace>FGM_Base</namespace>
+    </packageVersions>
 </ApexPage>
