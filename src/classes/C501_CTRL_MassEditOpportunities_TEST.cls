@@ -60,7 +60,7 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         insert cmp;
 
         //User account = new User(name='account1', FGM_Base__Program__c=cmp.Id);
-        list<Opportunity> listAmounts = new list<Opportunity>();   
+        List<Opportunity> listAmounts = new List<Opportunity>();   
         integer cAmounts = 5;     
         for (integer i = 0; i < cAmounts; i++) {
             Opportunity amount = new Opportunity(
@@ -91,13 +91,13 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         
         //point to our VF page
         PageReference p = new PageReference('Page.MassEditOpportunities');
-        p.getParameters().put('programid', cmp.id);
+        p.getParameters().put('programname', cmp.Name);
         p.getParameters().put('ownerid', user.id);
         Test.setCurrentPageReference(p);
         
         //instantiate the controller for this opp
         C501_CTRL_MassEditOpportunities ctrl = new C501_CTRL_MassEditOpportunities();
-        System.AssertEquals(cmp.Id, ctrl.programid);
+        System.AssertEquals(cmp.Name, ctrl.programname);
         System.AssertEquals(user.Id, ctrl.ownerid);
         System.Assert(ctrl.listSOPrograms.size() > 1);
         System.AssertEquals(2, ctrl.listSOOwners.size());
@@ -106,16 +106,15 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         ctrl.AddMoreEmptyRows();
         System.AssertEquals(cAmounts + ctrl.cEmptyOpportunityRecords, ctrl.listOpportunities.size());
         System.AssertEquals(true, ctrl.fHasListOpportunities);
-        System.Assert(ctrl.Cancel() == null);
         System.AssertEquals(0, ctrl.numberOfRecordsDirty);
         System.AssertEquals(null, ctrl.strSaveResults); 
 
-        ctrl.programid = null;
+        ctrl.programname = null;
         ctrl.ChangeProgram();
         System.AssertEquals(null, ctrl.ownerid);
         System.AssertEquals(null, ctrl.listOpportunities);
         
-        ctrl.programid = cmp.Id;
+        ctrl.programname = cmp.Name;
         ctrl.ChangeProgram();
         ctrl.ownerid = user.Id;
         ctrl.ChangeOwner();
@@ -144,7 +143,7 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         system.debug(ctrl.strSaveResults);
         System.Assert(ctrl.strSaveResults.startsWith('Error'));
         ctrl.ChangeOwner();
-        ctrl.SaveAndCloseOpportunities();      
+        ctrl.SaveOpportunities();      
         System.AssertEquals(0, ctrl.numberOfRecordsDirty);
         
     }

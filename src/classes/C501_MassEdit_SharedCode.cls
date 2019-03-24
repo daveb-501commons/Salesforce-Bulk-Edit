@@ -30,45 +30,129 @@
 
 global with sharing class C501_MassEdit_SharedCode { 
 
-    // the list of Programs
-    global list<SelectOption> listSOProgramsWithRequests(Date startDate, Date endDate) {
-        list<SelectOption> listSO = new list<SelectOption>();
+    // the list of Programs for Requests
+    global List<SelectOption> listSOProgramsWithRequests(Date startDate, Date endDate) {
+
+        List<SelectOption> listSO = new List<SelectOption>();
         listSO.add(new SelectOption('', ''));
 
-        for (FGM_Base__Program__c program : [
-            select Name, Id from FGM_Base__Program__c order by Name asc
-            limit 999]) {
+        List<Opportunity> listOpportunities = listOpportunitiesByCriteria(null, null, null, startDate, endDate);
+        List<Id> requestIds = new List<Id>();
+        for (Opportunity request :listOpportunities) {
+            requestIds.add(request.Id);
+        }
 
-                for (Opportunity opp : [
-                    select FGM_Base__Lead_Program__c from Opportunity
-                    where FGM_Base__Lead_Program__c = :program.Id and (CloseDate = null or (CloseDate >= :startDate and CloseDate <= :endDate)) 
-                    limit 1]) {
-                        listSO.add(new SelectOption(program.Id, program.Name));
-                    }
+        AggregateResult[] allAggregatedByName = [
+            SELECT FGM_Base__Program__r.Name
+            FROM FGM_Base__Contributing_Programs__c
+            WHERE FGM_Base__Request__c in :requestIds
+            GROUP BY FGM_Base__Program__r.Name
+            ORDER BY FGM_Base__Program__r.Name ASC];
+
+        Set<String> programGroups = new Set<String>();
+        String name;
+        for (AggregateResult result : allAggregatedByName)  {
+
+            name = result.get('Name').toString();
+
+            // Custom Client Filtering - find some way to get this from custom setting
+            if (name.startsWith('NF ')) {
+                continue;
             }
+
+            // Check to add program group
+            List<String> programNameTokens = name.split(' ');
+            if (!programGroups.contains(programNameTokens[0])) {
+                listSO.add(new SelectOption(programNameTokens[0], programNameTokens[0]));
+                programGroups.add(programNameTokens[0]);
+            }
+
+            listSO.add(new SelectOption(name, name));
+        }
 
         return listSO;
     }
 
     // the list of Owners for the specified FGM_Base__Program__c
-    global list<SelectOption> listSOOwnersOfRequests(ID programid, Date startDate, Date endDate) {
-        list<SelectOption> listSO = new list<SelectOption>();
+    global List<SelectOption> listSOOwnersOfRequests(String programName, Date startDate, Date endDate) {
+
+        List<SelectOption> listSO = new List<SelectOption>();
         listSO.add(new SelectOption('', ''));
 
-        for (User user : [
-            select Id, Name from User order by Name asc
-            limit 999]) {
+        List<Opportunity> listOpportunities = listOpportunitiesByCriteria(null, programname, null, startDate, endDate);
+        List<Id> requestIds = new List<Id>();
+        for (Opportunity request :listOpportunities) {
+            requestIds.add(request.Id);
+        }
 
-            for (Opportunity opp : [
-                    select OwnerId from Opportunity 
-                    where OwnerId = :user.Id and FGM_Base__Lead_Program__c = :programid and (CloseDate = null or (CloseDate >= :startDate and CloseDate <= :endDate)) 
-                    limit 1]) {
-                        listSO.add(new SelectOption(user.Id, user.Name));
-                }
-        }       
+        AggregateResult[] allAggregatedByName = [
+            SELECT OwnerId
+            FROM Opportunity
+            WHERE Id in :requestIds
+            GROUP BY OwnerId];
+
+        List<String> ownerIds = new List<String>();
+        for (AggregateResult result : allAggregatedByName)  {
+            ownerIds.add(result.get('OwnerId').toString());
+        }
+
+        String name, id;
+        for (User user : [
+            SELECT Id, Name
+            FROM User
+            WHERE Id in :ownerIds
+            ORDER By Name ASC]) {
+                listSO.add(new SelectOption(user.Id, user.Name));
+        }
+
         return listSO;
     }
    
+    global List<Opportunity> listOpportunitiesByCriteria(List<String> listStrFields, String programName, Id ownerId, Date startDate, Date endDate) {
+
+        // Get Contributing Programs
+        //
+        string strSoql = 
+            'select FGM_Base__Request__c from FGM_Base__Contributing_Programs__c where ';
+
+        if (programName <> null && !String.isBlank(programName)) {
+            strSoql += ' FGM_Base__Program__r.Name like \'' + programName + '%\' and ';
+        }
+        strSoql += ' FGM_Base__Scheduled_Payment_Date__c >= :startDate ';
+        strSoql += ' and FGM_Base__Scheduled_Payment_Date__c <= :endDate ';
+        strSoql += ' order by FGM_Base__Program__r.Name, FGM_Base__Scheduled_Payment_Date__c ASC NULLS FIRST';
+        
+        List<FGM_Base__Contributing_Programs__c> contributingPrograms = Database.Query(strSoql);
+        List<Id> requestIds = new List<Id>();
+        for (FGM_Base__Contributing_Programs__c contributingProgram :contributingPrograms) {
+            requestIds.add(contributingProgram.FGM_Base__Request__c);
+        }
+
+        // Get Opportunities
+        //
+        strSoql = 'select ';
+        if (listStrFields == null) {
+            strSoql += ' Id ';
+        }
+        else {
+            strSoql += String.join(listStrFields, ',');
+        }
+
+        strSoql += ' from Opportunity where Id in :requestIds';
+        
+        if (ownerId != null)
+            strSoql += ' and (OwnerId = :ownerId or OwnerId = null) ';
+
+        strSoql += ' and StageName <> \'Closed\' and StageName <> \'Withdrawn\'';
+
+        // Custom Client Filtering - find some way to get this from custom setting
+        strSoql += ' and (NOT Name like \'NF %\')';
+
+        strSoql += ' order by CloseDate, Owner.Name ASC NULLS FIRST';
+        
+        return Database.Query(strSoql); 
+    }
+
     // global utility used to detect whether the Foundation Grant Manager (Foundation Connect) is installed in this instance.
     private static boolean fCheckedForFGM = false;
     global static boolean IsFGMInstalled {

@@ -28,9 +28,9 @@
     POSSIBILITY OF SUCH DAMAGE.
 */
 
-global virtual with sharing class C501_CTRL_MassEditOpportunities {
+global virtual with sharing class C501_CTRL_MassEditPayments {
 
-    global integer cEmptyOpportunityRecords {
+    global integer cEmptyFGMBasePaymentRecords {
         get {
             return 1;
         }
@@ -43,7 +43,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
     global ID idRedirect { get; private set; }
     
     // constructor
-    global C501_CTRL_MassEditOpportunities() {
+    global C501_CTRL_MassEditPayments() {
         redirect = false;
         c501MassEdit_SharedCode = new C501_MassEdit_SharedCode();
         
@@ -56,12 +56,15 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
 
         // Get list of fields from fieldset
         listStrFields = new List<String>();
-        for (Schema.FieldSetMember f : SObjectType.Opportunity.FieldSets.MassEditOpportunities.getFields()) {
+        for (Schema.FieldSetMember f : SObjectType.FGM_Base__Payment__c.FieldSets.MassEditPayments.getFields()) {
             listStrFields.add(f.getFieldPath());
         }
 
         if (!listStrFields.contains('Id')) {
             listStrFields.add('Id');
+        }
+        if (!listStrFields.contains('FGM_Base__Request__r.OwnerId')) {
+            listStrFields.add('FGM_Base__Request__r.OwnerId');
         }
     }   
     
@@ -72,7 +75,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
     global List<SelectOption> listSOPrograms {
         get {
             if (listSOPrograms == null )
-                listSOPrograms = c501MassEdit_SharedCode.listSOProgramsWithRequests(oppDateFilter.FGM_Base__Start_Date__c, oppDateFilter.FGM_Base__End_Date__c);
+                listSOPrograms = c501MassEdit_SharedCode.listSOProgramsWithRequests(paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c, paymentDateFilter.FGM_Base__Payment_Date__c);
 
             return listSOPrograms;
         }
@@ -96,8 +99,8 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
     // the list of Owners to put in the dropdown
     global List<SelectOption> listSOOwners {
         get {
-            if (listSOOwners == null && programname != null) {
-                listSOOwners = c501MassEdit_SharedCode.listSOOwnersOfRequests(programname, oppDateFilter.FGM_Base__Start_Date__c, oppDateFilter.FGM_Base__End_Date__c);
+            if (listSOOwners == null && programName != null) {
+                listSOOwners = c501MassEdit_SharedCode.listSOOwnersOfRequests(programName, paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c, paymentDateFilter.FGM_Base__Payment_Date__c);
             }
             return listSOOwners;
         }
@@ -109,15 +112,15 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
     global date startDate { get; set; }
     global date endDate { get; set; }
     
-    global Opportunity oppDateFilter {
+    global FGM_Base__Payment__c paymentDateFilter {
         get {
-            if (oppDateFilter == null) {
-                oppDateFilter = new Opportunity();
+            if (paymentDateFilter == null) {
+                paymentDateFilter = new FGM_Base__Payment__c();
                 
-                oppDateFilter.FGM_Base__Start_Date__c = Date.newInstance(system.today().addYears(-1).year(), 1, 1);
-                oppDateFilter.FGM_Base__End_Date__c = system.today();
+                paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c = Date.newInstance(system.today().addYears(-1).year(), 1, 1);
+                paymentDateFilter.FGM_Base__Payment_Date__c = system.today();
             }
-            return oppDateFilter;
+            return paymentDateFilter;
         }
         set;
     }
@@ -125,7 +128,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
     // the user has changed the Owner dropdown
     global virtual PageReference ChangeOwner() {
         // clear out all state that is specific to the Owner
-        listOpportunities = null;
+        listPayments = null;
         strSaveResults = null;
         return null;
     }
@@ -135,7 +138,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
         // clear out all state that is specific to the Date
         listSOPrograms = null;
         listSOOwners = null;
-        listOpportunities = null;
+        listPayments = null;
         strSaveResults = null;
         return null;
     }
@@ -143,119 +146,142 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
     // status string for reporting the results of saving.
     global String strSaveResults { get; set; }
       
-    // The list of Opportunities.
-    global List<Opportunity> listOpportunities {
+    // The list of Payments.
+    global List<FGM_Base__Payment__c> listPayments {
         get {
-            if (listOpportunities == null) {
-                FillListOpportunities();
+            if (listPayments == null) {
+                FillListPayments();
             }
-            return listOpportunities;
+            return listPayments;
         }
         
         set;
     }
     
-    // helper function that the client can override, to query for the appropriate fields in Opportunities.
-    global virtual void FillListOpportunities() {
+    // helper function that the client can override, to query for the appropriate fields in Payments.
+    global virtual void FillListPayments() {
 
-        if (programname == null || String.isBlank(programname)) {
-            return;
+        List<Opportunity> listOpportunities = c501MassEdit_SharedCode.listOpportunitiesByCriteria(null, programname, ownerid, paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c, paymentDateFilter.FGM_Base__Payment_Date__c);
+        List<Id> requestIds = new List<Id>();
+        for (Opportunity request :listOpportunities) {
+            requestIds.add(request.Id);
         }
 
-        listOpportunities = c501MassEdit_SharedCode.listOpportunitiesByCriteria(listStrFields, programname, ownerid, oppDateFilter.FGM_Base__Start_Date__c, oppDateFilter.FGM_Base__End_Date__c);
+        // if they haven't yet picked a program
+        if (programName == null) return;           
+        
+        // find the existing owners
+        // we need to use dynamic soql to pick up all custom fields we don't know about
+        string strSoql = 
+            'select ' + String.join(listStrFields, ',');
+
+        strSoql += ' from FGM_Base__Payment__c where FGM_Base__Request__c <> null and FGM_Base__Request__c in :requestIds';
+        
+        if (paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c != null) {
+            Date dtStart = paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c;
+            strSoql += ' and FGM_Base__Scheduled_Payment_Date__c >= :dtStart ';
+        }
+        if (paymentDateFilter.FGM_Base__Payment_Date__c != null) {
+            Date dtEnd = paymentDateFilter.FGM_Base__Payment_Date__c;
+            strSoql += ' and FGM_Base__Scheduled_Payment_Date__c <= :dtEnd ';
+        }
+
+        strSoql += ' order by FGM_Base__Scheduled_Payment_Date__c, FGM_Base__Request__r.Owner.Name ASC NULLS FIRST';
+        
+        listPayments = Database.Query(strSoql); 
     }
     
-    global Boolean fHasListOpportunities {
+    global Boolean fHasListPayments {
         get {
-            return listOpportunities != null && listOpportunities.size() > 0;
+            return listPayments != null && listPayments.size() > 0;
         }
     }     
  
-    global virtual void AddMoreEmptyRowsToOpportunities() {
+    global virtual void AddMoreEmptyRowsToPayments() {
         try {
-            if (listOpportunities == null) return;
+            if (listPayments == null) return;
 
-            for (integer i = 0; i < cEmptyOpportunityRecords; i++) { 
-                Opportunity opp = new Opportunity();
-                opp.OwnerId = ownerid;
-                listOpportunities.add(opp);
+            for (integer i = 0; i < cEmptyFGMBasePaymentRecords; i++) { 
+                FGM_Base__Payment__c payment = new FGM_Base__Payment__c();
+                payment.FGM_Base__Request__r.OwnerId = ownerid;
+                listPayments.add(payment);
             }
         } catch (Exception e) {
             ApexPages.addMessages(e);            
         }       
     }
     
-    // used to track the Id's of all Opportunity records that get modified.
-    global Set<ID> setOpportunitiesIdDirty {
+    // used to track the Id's of all FGM_Base__Payment__c records that get modified.
+    global Set<ID> setPaymentsIdDirty {
         get {
-            if (setOpportunitiesIdDirty == null) {
-                setOpportunitiesIdDirty = new Set<ID>();
+            if (setPaymentsIdDirty == null) {
+                setPaymentsIdDirty = new Set<ID>();
             }
-            return setOpportunitiesIdDirty;
+            return setPaymentsIdDirty;
         }
         set;
     }
     
-    // to allow vf page to see how many Opportunity records are dirty
+    // to allow vf page to see how many FGM_Base__Payment__c records are dirty
     global Integer numberOfRecordsDirty {
         get { 
-            if (setOpportunitiesIdDirty == null)
+            if (setPaymentsIdDirty == null)
                 return 0;
             else
-                return setOpportunitiesIdDirty.size();
+                return setPaymentsIdDirty.size();
         }
     }
     
-    // this gets called whenever a field in the Opportunities datatable is modified.
-    // use this to remember which existing Opportunities records have been modified.
-    global virtual PageReference OpportunitiesRecordModified() {
+    // this gets called whenever a field in the Payments datatable is modified.
+    // use this to remember which existing Payments records have been modified.
+    global virtual PageReference PaymentsRecordModified() {
         String strId = ApexPages.currentPage().getParameters().get('usersIdDirtied');
-        if (strId != null && strId != '') setOpportunitiesIdDirty.add(strId);
+        if (strId != null && strId != '') setPaymentsIdDirty.add(strId);
         return null;
     }
     
-    //save the Opportunities created or modified
-    global virtual PageReference SaveOpportunities() {
+    //save the Payments created or modified
+    global virtual PageReference SavePayments() {
         
-        if (listOpportunities == null) return null;
+        if (listPayments == null) return null;
         
         strSaveResults = null;
         
         try {
             // create two lists: one to update and one to insert.
-            List<Opportunity> listOpportunitiesCreate = new List<Opportunity>();
-            List<Opportunity> listOpportunitiesUpdate = new List<Opportunity>();
+            List<FGM_Base__Payment__c> listPaymentsCreate = new List<FGM_Base__Payment__c>();
+            List<FGM_Base__Payment__c> listPaymentsUpdate = new List<FGM_Base__Payment__c>();
 
-            for (Opportunity opp : listOpportunities) {
-                if (opp.Id != null) {
+            for (FGM_Base__Payment__c payment : listPayments) {
+                if (payment.Id != null) {
                     // we couldn't reliably mark dirty records in all scenarios,
                     // so we've decided it is better to always update all records.
-                    //if (setOpportunitiesIdDirty.contains(opp.Id)) 
-                        listOpportunitiesUpdate.add(opp);
-                } else if (opp.OwnerId != null) {
-                    listOpportunitiesCreate.add(opp);
+                    //if (setPaymentsIdDirty.contains(payment.Id)) 
+                        listPaymentsUpdate.add(payment);
+                } else if (payment.FGM_Base__Request__r.OwnerId != null) {
+                    listPaymentsCreate.add(payment);
                 }
             }
             
-            update listOpportunitiesUpdate;
+            update listPaymentsUpdate;
            
-            insert listOpportunitiesCreate;
+            insert listPaymentsCreate;
             
-            strSaveResults = String.valueOf(listOpportunitiesCreate.size() + listOpportunitiesUpdate.size()) + ' ' + Label.labelMassEditOpportunitiesSaveSuccess;
+            strSaveResults = String.valueOf(listPaymentsCreate.size() + listPaymentsUpdate.size()) + ' ' + Label.labelMassEditPaymentsSaveSuccess;
             ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.CONFIRM, strSaveResults));
             // successful save, so clear out dirty list
-            setOpportunitiesIdDirty = null;
+            setPaymentsIdDirty = null;
             return null;            
         } catch (Exception e) {
-            strSaveResults = Label.labelMassEditOpportunitiesErrorOnSave;
+            strSaveResults = Label.labelMassEditPaymentsErrorOnSave;
             ApexPages.addMessages(e); 
             return null;
         }
     }
 
-    // user wants to add more empty rows to the Opportunities table
+    // user wants to add more empty rows to the Payments table
     global PageReference AddMoreEmptyRows() {
-        AddMoreEmptyRowsToOpportunities();
+        AddMoreEmptyRowsToPayments();
         return null;
     }
     

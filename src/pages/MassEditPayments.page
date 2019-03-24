@@ -28,7 +28,7 @@
     POSSIBILITY OF SUCH DAMAGE.
 -->  
  
-<apex:page controller="C501_CTRL_MassEditOpportunities" title="{!$Label.labelMassEditOpportunitiesTitle}" tabStyle="Opportunity" standardStylesheets="true" sidebar="false">
+<apex:page controller="C501_CTRL_MassEditPayments" title="{!$Label.labelMassEditPaymentsTitle}" tabStyle="FGM_Base__Payment__c" standardStylesheets="true" sidebar="false">
     <apex:stylesheet value="{!URLFOR($Resource.sfdo213, '/assets/styles/salesforce-lightning-design-system-vf.min.css')}" />
     <apex:stylesheet value="{!URLFOR($Resource.v4sStaticResources, '/v4s_slds/v4s-common.css')}" />
 
@@ -71,19 +71,19 @@
             <div class="slds-page-header" role="banner">
                 <div class="slds-grid">
                     <div class="slds-col--padded">
-                        <h1 class="slds-page-header__title slds-m-right--small slds-truncate slds-align-middle">{!$Label.labelMassEditOpportunitiesTitle}</h1>
+                        <h1 class="slds-page-header__title slds-m-right--small slds-truncate slds-align-middle">{!$Label.labelMassEditPaymentsTitle}</h1>
                     </div>        
     
                     <div class="slds-col--padded slds-no-flex slds-align-middle">
                         <div class="slds-button-group" role="group">
-                            <apex:commandButton styleClass="slds-button slds-button--brand" action="{!SaveOpportunities}" value="{!$Label.labelButtonSave}" id="btnSave" immediate="false" reRender="vfform"/>
+                            <apex:commandButton styleClass="slds-button slds-button--brand" action="{!SavePayments}" value="{!$Label.labelButtonSave}" id="btnSave" immediate="false" reRender="vfform"/>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- /PAGE HEADER -->
             <c:C501_UTIL_PageMessages />
-            <p class="slds-p-around--medium"><apex:outputText value="{!$Label.labelMassEditOpportunitiesHelp}" style="font-style:italic" /></p>
+            <p class="slds-p-around--medium"><apex:outputText value="{!$Label.labelMassEditPaymentsHelp}" style="font-style:italic" /></p>
             <fieldset class="slds-form">
                 <div class="slds-grid">
                     <div class="slds-col--padded slds-form-element slds-size--1-of-3">
@@ -91,7 +91,7 @@
                             Program
                         </apex:outputLabel>
                         <apex:selectList id="ddlPrograms" value="{!programname}" required="false" size="1" styleClass="slds-select" disabled="{!listSOPrograms.size=1}">
-                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlOwners,tblOpportunities" status="retrieveStatus" action="{!ChangeProgram}" />
+                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlOwners,tblPayments" status="retrieveStatus" action="{!ChangeProgram}" />
                             <apex:selectOptions value="{!listSOPrograms}" /> 
                         </apex:selectList>
                     </div>
@@ -100,7 +100,7 @@
                             Request Owner
                         </apex:outputLabel>
                         <apex:selectList id="ddlOwners" value="{!ownerid}" required="false" size="1" styleClass="slds-select" disabled="{!listSOOwners.size=1}">
-                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlOwners,tblOpportunities" status="retrieveStatus" action="{!ChangeOwner}" />
+                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlOwners,tblPayments" status="retrieveStatus" action="{!ChangeOwner}" />
                             <apex:selectOptions value="{!listSOOwners}" /> 
                         </apex:selectList>
                     </div>
@@ -110,39 +110,43 @@
                 <div class="slds-grid">
                     <div class="slds-col--padded slds-size--1-of-3 slds-form-element">
                         <apex:outputLabel for="fldDateFrom" styleClass="slds-form-element__label" >
-                            {!$Label.labelMassEditOpportunitiesDateFilterFrom}
+                            {!$Label.labelMassEditPaymentsDateFilterFrom}
                         </apex:outputLabel>
-                        <apex:inputField id="fldDateFrom" required="false" value="{!oppDateFilter.FGM_Base__Start_Date__c}" label="" styleClass="slds-input dateOnlyInput" >
-                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlPrograms,ddlOwners,tblOpportunities" status="retrieveStatus" action="{!ChangeDate}" />
+                        <apex:inputField id="fldDateFrom" required="false" value="{!paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c}" label="" styleClass="slds-input dateOnlyInput" >
+                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlPrograms,ddlOwners,tblPayments" status="retrieveStatus" action="{!ChangeDate}" />
                         </apex:inputField>
                     </div>
                     <div class="slds-col--padded slds-size--1-of-3 slds-form-element">
                         <apex:outputLabel for="fldDateTo" styleClass="slds-form-element__label" >
-                            {!$Label.labelMassEditOpportunitiesDateFilterTo}
+                            {!$Label.labelMassEditPaymentsDateFilterTo}
                         </apex:outputLabel>
-                        <apex:inputField id="fldDateTo" required="false" value="{!oppDateFilter.FGM_Base__End_Date__c}" label="" styleClass="slds-input dateOnlyInput" >
-                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlPrograms,ddlOwners,tblOpportunities" status="retrieveStatus" action="{!ChangeDate}" />
+                        <apex:inputField id="fldDateTo" required="false" value="{!paymentDateFilter.FGM_Base__Payment_Date__c}" label="" styleClass="slds-input dateOnlyInput" >
+                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlPrograms,ddlOwners,tblPayments" status="retrieveStatus" action="{!ChangeDate}" />
                         </apex:inputField>
                     </div>
                     <div class="slds-col--padded slds-size--1-of-3"/>
                 </div> 
             </fieldset>   
-            <apex:dataTable value="{!listOpportunities}" var="opp" id="tblOpportunities" 
+            <apex:dataTable value="{!listPayments}" var="payment" id="tblPayments" 
                             styleClass="slds-table slds-table--compact slds-table--bordered"
-                            headerClass="slds-text-heading--label slds-theme--shade" style="width:100%" >  
+                            headerClass="slds-text-heading--label slds-theme--shade" style="width:100%" >                 
                             
                 <!-- Add Admin Fields -->
                 <apex:column styleClass="myTD reference" >
-                    <apex:facet name="header">Request</apex:facet>
-                    <apex:outputLink value="/{!opp.Id}">Go To Request</apex:outputLink>
+                    <apex:facet name="header">Payment</apex:facet>
+                    <apex:outputLink value="/{!payment.Id}">Go To Payment</apex:outputLink>
                 </apex:column> 
-                                        
+                <apex:column styleClass="myTD reference" >
+                    <apex:facet name="header">Request Owner</apex:facet>
+                    <apex:inputField value="{!payment.FGM_Base__Request__r.OwnerId}" styleClass="lookupInput" required="false" />
+                </apex:column> 
+
                 <!-- Add Field Set Fields -->
-                <apex:repeat value="{!$ObjectType.Opportunity.FieldSets.MassEditOpportunities}" var="f" >
-                    <apex:column styleClass="myTD {!f.Type} {!IF($ObjectType['Opportunity'].fields[f].dependentPicklist,
+                <apex:repeat value="{!$ObjectType.FGM_Base__Payment__c.FieldSets.MassEditPayments}" var="f" >
+                    <apex:column styleClass="myTD {!f.Type} {!IF($ObjectType['FGM_Base__Payment__c'].fields[f].dependentPicklist,
                                                 IF(f.Type == 'picklist', 'dependentPicklistFixup', 'dependentMultiPicklistFixup'),'')}" >
                         <apex:facet name="header">{!f.Label + IF(f.DBRequired, ' *', '')}</apex:facet>
-                        <apex:inputField value="{!opp[f]}" 
+                        <apex:inputField value="{!payment[f]}" 
                                     styleClass="{!CASE(f.Type, 
                                                     'reference', 'lookupInput', 
                                                     'picklist', 'slds-select',
@@ -173,7 +177,7 @@
                 fixSearchIMG();
             </script>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <apex:commandLink action="{!AddMoreEmptyRows}" value="{!$Label.labelLinkAddMoreRows}" id="linkAdd" immediate="true" reRender="tblOpportunities" oncomplete="javascript:fixSearchIMG()"/>
+            <apex:commandLink action="{!AddMoreEmptyRows}" value="{!$Label.labelLinkAddMoreRows}" id="linkAdd" immediate="true" reRender="tblPayments" oncomplete="javascript:fixSearchIMG()"/>
         </div> <!-- slds -->    
     </apex:form>
 </apex:page>

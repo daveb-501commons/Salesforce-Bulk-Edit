@@ -4,6 +4,8 @@
     <types>
         <members>C501_CTRL_MassEditOpportunities</members>
         <members>C501_CTRL_MassEditOpportunities_TEST</members>
+        <members>C501_CTRL_MassEditPayments</members>
+        <members>C501_CTRL_MassEditPayments_TEST</members>
         <members>C501_MassEdit_SharedCode</members>
         <members>C501_MassEdit_SharedCode_TEST</members>
         <members>C501_UTIL_PageMessages_CTRL</members>
@@ -16,16 +18,15 @@
     </types>
     <types>
         <members>MassEditOpportunities</members>
+        <members>MassEditPayments</members>
         <name>ApexPage</name>
     </types>
     <types>
-        <members>labelMassEditDateFilterFrom</members>
-        <members>labelMassEditDateFilterTo</members>
+        <members>labelMassEditOpportunitiesDateFilterFrom</members>
+        <members>labelMassEditOpportunitiesDateFilterTo</members>
         <members>labelButtonSave</members>
-        <members>labelButtonSaveAndClose</members>
         <members>labelButtonEdit</members>
         <members>labelButtonClose</members>
-        <members>labelButtonCancel</members>
         <members>PermissionUpdateException</members>
         <members>PermissionReadException</members>
         <members>PermissionDeleteException</members>
@@ -36,11 +37,17 @@
         <members>PageMessagesConfirm</members>
         <members>labelMessageSaving</members>
         <members>labelMessageLoading</members>
-        <members>labelMassEditSaveSuccess</members>
-        <members>labelMassEditOptional</members>
-        <members>labelMassEditHelp</members>
-        <members>labelMassEditTitle</members>
-        <members>labelMassEditErrorOnSave</members>
+        <members>labelMassEditOpportunitiesSaveSuccess</members>
+        <members>labelMassEditOpportunitiesOptional</members>
+        <members>labelMassEditOpportunitiesHelp</members>
+        <members>labelMassEditOpportunitiesTitle</members>
+        <members>labelMassEditOpportunitiesErrorOnSave</members>
+        <members>labelMassEditPaymentsSaveSuccess</members>
+        <members>labelMassEditPaymentsHelp</members>
+        <members>labelMassEditPaymentsErrorOnSave</members>
+        <members>labelMassEditPaymentsDateFilterFrom</members>
+        <members>labelMassEditPaymentsDateFilterTo</members>
+        <members>labelMassEditPaymentsTitle</members>
         <members>labelLinkAddMoreRows</members>
         <members>labelListViewFirst</members>
         <members>labelListViewLast</members>
@@ -56,6 +63,7 @@
     </types>
     <types>
         <members>Opportunity.MassEditOpportunities</members>
+        <members>FGM_Base__Payment__c.MassEditPayments</members>
         <name>FieldSet</name>
     </types>
     <types>

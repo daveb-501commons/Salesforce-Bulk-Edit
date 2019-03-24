@@ -65,14 +65,6 @@
         <value>User does not have permissions to update {0}.</value>
     </labels>
     <labels>
-        <fullName>labelButtonCancel</fullName>
-        <categories>MassEditRequests</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>label for the Cancel button used on several pages.</shortDescription>
-        <value>Cancel</value>
-    </labels>
-    <labels>
         <fullName>labelButtonClose</fullName>
         <categories>MassEditRequests</categories>
         <language>en_US</language>
@@ -95,14 +87,7 @@
         <protected>false</protected>
         <shortDescription>The label for the Save button used on several pages.</shortDescription>
         <value>Save</value>
-    </labels>    <labels>
-        <fullName>labelButtonSaveAndClose</fullName>
-        <categories>MassEditRequests</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>label for the Save and Close button used on several pages</shortDescription>
-        <value>Save &amp; Close</value>
-    </labels>
+    </labels>    
     <labels>
         <fullName>labelLinkAddMoreRows</fullName>
         <categories>MassEditRequests</categories>
@@ -151,23 +136,23 @@
         <value>Next</value>
     </labels>
     <labels>
-        <fullName>labelMassEditDateFilterFrom</fullName>
+        <fullName>labelMassEditOpportunitiesTitle</fullName>
+        <categories>MassEditRequests</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>title for the Mass Edit Opportunities page</shortDescription>
+        <value>Mass Edit Requests</value>
+    </labels>    
+    <labels>
+        <fullName>labelMassEditOpportunitiesDateFilterFrom</fullName>
         <categories>MassEditRequests</categories>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>label for the date filter From field.</shortDescription>
-        <value>Pipeline Date From</value>
+        <value>Scheduled Payment Date From</value>
     </labels>
     <labels>
-        <fullName>labelMassEditTitle</fullName>
-        <categories>MassEditRequests</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>title for the Mass Edit page</shortDescription>
-        <value>Mass Edit Requests</value>
-    </labels>    
-    <labels>
-        <fullName>labelMassEditDateFilterTo</fullName>
+        <fullName>labelMassEditOpportunitiesDateFilterTo</fullName>
         <categories>MassEditRequests</categories>
         <language>en_US</language>
         <protected>false</protected>
@@ -175,7 +160,7 @@
         <value>To</value>
     </labels>
     <labels>
-        <fullName>labelMassEditErrorOnSave</fullName>
+        <fullName>labelMassEditOpportunitiesErrorOnSave</fullName>
         <categories>MassEditRequests</categories>
         <language>en_US</language>
         <protected>false</protected>
@@ -183,15 +168,15 @@
         <value>Errors were encountered trying to save the Requests.</value>
     </labels>
     <labels>
-        <fullName>labelMassEditHelp</fullName>
+        <fullName>labelMassEditOpportunitiesHelp</fullName>
         <categories>MassEditRequests</categories>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>help text for the Mass Edit Requests page</shortDescription>
-        <value>Choose the Program and optionally an Owner then the page will display any existing Request records.  Click Add new record to create new requests.  Update all rows as appropriate, and then click Save.  Requests with Pipeline equals Closed or Withdrawn are not included.</value>
+        <value>Choose the Program and an option Request Owner then the page will display any existing Request records.  Click Add new record to create new requests.  Update all rows as appropriate, and then click Save.  Requests with Pipeline equals Closed or Withdrawn are not included.</value>
     </labels>
     <labels>
-        <fullName>labelMassEditOptional</fullName>
+        <fullName>labelMassEditOpportunitiesOptional</fullName>
         <categories>MassEditRequests</categories>
         <language>en_US</language>
         <protected>false</protected>
@@ -199,12 +184,60 @@
         <value>(optional)</value>
     </labels>
     <labels>
-        <fullName>labelMassEditSaveSuccess</fullName>
+        <fullName>labelMassEditOpportunitiesSaveSuccess</fullName>
         <categories>MassEditRequests</categories>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>message displayed when Mass Edit Requests saves successfully.</shortDescription>
         <value>Requests records have been saved.</value>
+    </labels>
+    <labels>
+        <fullName>labelMassEditPaymentsTitle</fullName>
+        <categories>MassEditPayments</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>title for the Mass Edit Payments page</shortDescription>
+        <value>Mass Edit Payments</value>
+    </labels>    
+    <labels>
+        <fullName>labelMassEditPaymentsHelp</fullName>
+        <categories>MassEditPayments</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>help text for the Mass Edit Payments page</shortDescription>
+        <value>Choose the Program and an optional Request Owner then the page will display any existing Payments records.  Click Add new record to create new payments.  Update all rows as appropriate, and then click Save.  Requests with Pipeline equals Closed or Withdrawn are not included.</value>
+    </labels>
+    <labels>
+        <fullName>labelMassEditPaymentsSaveSuccess</fullName>
+        <categories>MassEditPayments</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>message displayed when Mass Edit Payments saves successfully.</shortDescription>
+        <value>Payments records have been saved.</value>
+    </labels>
+    <labels>
+        <fullName>labelMassEditPaymentsDateFilterFrom</fullName>
+        <categories>MassEditPayments</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>label for the date filter From field.</shortDescription>
+        <value>Scheduled Payment Date From</value>
+    </labels>
+    <labels>
+        <fullName>labelMassEditPaymentsDateFilterTo</fullName>
+        <categories>MassEditPayments</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>label for the date filter section To field.</shortDescription>
+        <value>To</value>
+    </labels>
+    <labels>
+        <fullName>labelMassEditPaymentsErrorOnSave</fullName>
+        <categories>MassEditPayments</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>error message when Mass Edit Payments save fails.</shortDescription>
+        <value>Errors were encountered trying to save the Payments.</value>
     </labels>
     <labels>
         <fullName>labelMessageLoading</fullName>
