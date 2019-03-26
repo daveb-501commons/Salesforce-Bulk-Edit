@@ -30,7 +30,7 @@
 
 global virtual with sharing class C501_CTRL_MassEditPayments {
 
-    global integer cEmptyFGMBasePaymentRecords {
+    global integer cEmptyPaymentRecords {
         get {
             return 1;
         }
@@ -201,9 +201,8 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
         try {
             if (listPayments == null) return;
 
-            for (integer i = 0; i < cEmptyFGMBasePaymentRecords; i++) { 
+            for (integer i = 0; i < cEmptyPaymentRecords; i++) { 
                 FGM_Base__Payment__c payment = new FGM_Base__Payment__c();
-                payment.FGM_Base__Request__r.OwnerId = ownerid;
                 listPayments.add(payment);
             }
         } catch (Exception e) {

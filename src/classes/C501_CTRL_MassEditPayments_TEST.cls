@@ -33,5 +33,158 @@ private with sharing class C501_CTRL_MassEditPayments_TEST {
     
     //==================== TEST METHOD(s) ======================================
     private static testmethod void CodeCoverageTests() {
+        // set up intial test data
+        Account acc = new Account(name='Individual Test User');
+        insert acc;
+
+        String orgId = UserInfo.getOrganizationId();
+        Profile profile = [SELECT Id FROM Profile WHERE Name='System Administrator'];
+        Integer RandomId=Integer.valueOf(Math.rint(Math.random()*1000000));
+        String dateString=String.valueof(Datetime.now()).replace(' ','').replace(':','').replace('-','') ;
+        String uniqueName=orgId+dateString+RandomId;
+        User user = new User(firstname = 'ABC',
+            lastName = 'XYZ',
+            email = uniqueName + '@test' + orgId + '.org',
+            Username = uniqueName + '@test' + orgId + '.org',
+            EmailEncodingKey = 'ISO-8859-1',
+            Alias = uniqueName.substring(18, 23),
+            TimeZoneSidKey = 'America/Los_Angeles',
+            LocaleSidKey = 'en_US',
+            LanguageLocaleKey = 'en_US',
+            ProfileId = profile.Id
+        ); 
+        insert user;
+
+        // Create Programs
+        integer cRequests = 5;     
+        List<FGM_Base__Program__c> listPrograms = new List<FGM_Base__Program__c>();   
+        for (integer i = 0; i < cRequests; i++) {
+            listPrograms.add(
+                new FGM_Base__Program__c(
+                    Name = 'Program ' + i
+            ));
+        }
+        insert listPrograms;         
+
+        // Create Requests
+        List<Opportunity> listRequests = new List<Opportunity>();   
+        for (integer i = 0; i < cRequests; i++) {
+            listRequests.add(
+                new Opportunity(
+                    // Request Information
+                    AccountId = acc.id, 
+                    Name = 'Opportunity ' + 1,
+                    CloseDate = System.today(),                   // Pipeline Date
+                    StageName = 'Active',                         // Pipeline
+
+                    // Program
+                    FGM_Base__Lead_Program__c = listPrograms[i].Id,
+
+                    // Financials
+                    Amount = i * 1.5,
+
+                    // Timeframe
+                    FGM_Base__Start_Date__c = System.today(),
+
+                    // Optionals
+                    OwnerId = user.Id,
+                    Status__c = 'Confirmed'
+            ));
+        }              
+        insert listRequests;
+
+        // Create Payments
+        List<FGM_Base__Payment__c> listPayments = new List<FGM_Base__Payment__c>();   
+        for (integer i = 0; i < cRequests; i++) {
+            listPayments.add(
+                new FGM_Base__Payment__c (
+                    // Update required fields
+                    FGM_Base__Request__c = listRequests[i].Id,
+                    FGM_Base__Amount__c = i * 10.0,
+                    Pledged_or_New__c = 'New',
+                    FGM_Base__Status__c = 'Scheduled',
+                    FGM_Base__Scheduled_Payment_Date__c = System.today()
+            ));
+        }
+        insert listPayments;
+
+
+        // Create Budgets
+        List<FGM_Base__Budget__c> listBudgets = new List<FGM_Base__Budget__c>();   
+        for (integer i = 0; i < cRequests; i++) {
+            listBudgets.add(
+                new FGM_Base__Budget__c(
+                    Name = 'Budget ' + i,
+                    Budget_Status__c = 'Estimated',
+                    FGM_Base__Fiscal_Year__c = '2010',
+                    FGM_Base__Program__c = listPrograms[i].Id
+            ));
+        }
+        insert listBudgets;         
+
+        // Create Contibuting Programs
+        List<FGM_Base__Contributing_Programs__c> listContributingPrograms = new List<FGM_Base__Contributing_Programs__c>();   
+        for (integer i = 0; i < cRequests; i++) {
+            listContributingPrograms.add(
+                new FGM_Base__Contributing_Programs__c(
+                    FGM_Base__Request__c = listRequests[i].Id,
+                    FGM_Base__Amount__c = i * 10.0,
+                    FGM_Base__Program__c = listPrograms[i].Id,
+                    Budget__c = listBudgets[i].Id,
+                    FGM_Base__Payment__c = listPayments[i].Id
+            ));
+        }
+        insert listContributingPrograms;         
+
+        //point to our VF page
+        PageReference p = new PageReference('Page.MassEditPayments');
+        p.getParameters().put('programname', 'Program');
+        p.getParameters().put('ownerid', user.id);
+        Test.setCurrentPageReference(p);
+        
+        //instantiate the controller for this opp
+        C501_CTRL_MassEditPayments ctrl = new C501_CTRL_MassEditPayments();
+        System.AssertEquals('Program', ctrl.programname);
+        System.AssertEquals(user.Id, ctrl.ownerid);
+        System.Assert(ctrl.listSOPrograms.size() > 1);
+        System.AssertEquals(2, ctrl.listSOOwners.size());
+        System.AssertEquals(cRequests, ctrl.listPayments.size());
+        
+        ctrl.AddMoreEmptyRows();
+        System.AssertEquals(cRequests + ctrl.cEmptyPaymentRecords, ctrl.listPayments.size());
+        System.AssertEquals(true, ctrl.fHaslistPayments);
+        System.AssertEquals(0, ctrl.numberOfRecordsDirty);
+        System.AssertEquals(null, ctrl.strSaveResults); 
+
+        ctrl.programname = null;
+        ctrl.ChangeProgram();
+        System.AssertEquals(null, ctrl.ownerid);
+        System.AssertEquals(null, ctrl.listPayments);
+        
+        ctrl.programname = listPrograms[0].Name;
+        ctrl.ChangeProgram();
+        ctrl.ownerid = user.Id;
+        ctrl.ChangeOwner();
+        ctrl.AddMoreEmptyRows();
+        System.AssertEquals(1 + ctrl.cEmptyPaymentRecords, ctrl.listPayments.size());
+        System.AssertEquals(0, ctrl.numberOfRecordsDirty);
+        
+        ctrl.listPayments.get(0).FGM_Base__Amount__c = 2;
+        p.getParameters().put('usersIdDirtied', ctrl.listPayments.get(0).id);
+        ctrl.PaymentsRecordModified();
+        System.AssertEquals(1, ctrl.setPaymentsIdDirty.size());
+        
+        p.getParameters().put('usersIdDirtied', null);
+        ctrl.PaymentsRecordModified();
+        System.AssertEquals(1, ctrl.setPaymentsIdDirty.size());
+        System.AssertEquals(1, ctrl.numberOfRecordsDirty);
+
+        // test the save!
+        ctrl.SavePayments();
+        system.debug(ctrl.strSaveResults);
+        //System.Assert(ctrl.strSaveResults.startsWith('Error'));
+        ctrl.ChangeOwner();
+        ctrl.SavePayments();      
+        System.AssertEquals(0, ctrl.numberOfRecordsDirty);        
     }
 }

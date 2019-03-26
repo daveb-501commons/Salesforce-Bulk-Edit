@@ -56,55 +56,103 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         ); 
         insert user;
 
-        FGM_Base__Program__c cmp = new FGM_Base__Program__c(name='Test FGM_Base__Program__c', FGM_Base__Active__c=true);
-        insert cmp;
+        // Create Programs
+        integer cRequests = 5;     
+        List<FGM_Base__Program__c> listPrograms = new List<FGM_Base__Program__c>();   
+        for (integer i = 0; i < cRequests; i++) {
+            listPrograms.add(
+                new FGM_Base__Program__c(
+                    Name = 'Program ' + i
+            ));
+        }
+        insert listPrograms;         
 
-        //User account = new User(name='account1', FGM_Base__Program__c=cmp.Id);
-        List<Opportunity> listAmounts = new List<Opportunity>();   
-        integer cAmounts = 5;     
-        for (integer i = 0; i < cAmounts; i++) {
-            Opportunity amount = new Opportunity(
-                
-                // Request Information
-                AccountId=acc.id, 
-                Name='Opportunity Name',
-                CloseDate=System.today(),
-                StageName='Active',
+        // Create Requests
+        List<Opportunity> listRequests = new List<Opportunity>();   
+        for (integer i = 0; i < cRequests; i++) {
+            listRequests.add(
+                new Opportunity(
+                    // Request Information
+                    AccountId = acc.id, 
+                    Name = 'Opportunity ' + 1,
+                    CloseDate = System.today(),                   // Pipeline Date
+                    StageName = 'Active',                         // Pipeline
 
-                // Program
-                FGM_Base__Lead_Program__c = cmp.id,
+                    // Program
+                    FGM_Base__Lead_Program__c = listPrograms[i].Id,
 
-                // Financials
-                Amount = 1.5,
+                    // Financials
+                    Amount = i * 1.5,
 
-                // Timeframe
-                FGM_Base__Start_Date__c=System.today(), 
+                    // Timeframe
+                    FGM_Base__Start_Date__c = System.today(),
 
-                // Optionals
-                OwnerId=user.Id,
-                Status__c='Confirmed'
+                    // Optionals
+                    OwnerId = user.Id,
+                    Status__c = 'Confirmed'
+            ));
+        }              
+        insert listRequests;
 
-            );
-            listAmounts.add(amount);
-        }                       
-        insert listAmounts;
-        
+        // Create Payments
+        List<FGM_Base__Payment__c> listPayments = new List<FGM_Base__Payment__c>();   
+        for (integer i = 0; i < cRequests; i++) {
+            listPayments.add(
+                new FGM_Base__Payment__c (
+                    // Update required fields
+                    FGM_Base__Request__c = listRequests[i].Id,
+                    FGM_Base__Amount__c = i * 10.0,
+                    Pledged_or_New__c = 'New',
+                    FGM_Base__Status__c = 'Scheduled',
+                    FGM_Base__Scheduled_Payment_Date__c = System.today()
+            ));
+        }
+        insert listPayments;
+
+
+        // Create Budgets
+        List<FGM_Base__Budget__c> listBudgets = new List<FGM_Base__Budget__c>();   
+        for (integer i = 0; i < cRequests; i++) {
+            listBudgets.add(
+                new FGM_Base__Budget__c(
+                    Name = 'Budget ' + i,
+                    Budget_Status__c = 'Estimated',
+                    FGM_Base__Fiscal_Year__c = '2010',
+                    FGM_Base__Program__c = listPrograms[i].Id
+            ));
+        }
+        insert listBudgets;         
+
+        // Create Contibuting Programs
+        List<FGM_Base__Contributing_Programs__c> listContributingPrograms = new List<FGM_Base__Contributing_Programs__c>();   
+        for (integer i = 0; i < cRequests; i++) {
+            listContributingPrograms.add(
+                new FGM_Base__Contributing_Programs__c(
+                    FGM_Base__Request__c = listRequests[i].Id,
+                    FGM_Base__Amount__c = i * 10.0,
+                    FGM_Base__Program__c = listPrograms[i].Id,
+                    Budget__c = listBudgets[i].Id,
+                    FGM_Base__Payment__c = listPayments[i].Id
+            ));
+        }
+        insert listContributingPrograms;         
+
         //point to our VF page
         PageReference p = new PageReference('Page.MassEditOpportunities');
-        p.getParameters().put('programname', cmp.Name);
+        p.getParameters().put('programname', 'Program');
         p.getParameters().put('ownerid', user.id);
         Test.setCurrentPageReference(p);
         
         //instantiate the controller for this opp
         C501_CTRL_MassEditOpportunities ctrl = new C501_CTRL_MassEditOpportunities();
-        System.AssertEquals(cmp.Name, ctrl.programname);
+        System.AssertEquals('Program', ctrl.programname);
         System.AssertEquals(user.Id, ctrl.ownerid);
         System.Assert(ctrl.listSOPrograms.size() > 1);
         System.AssertEquals(2, ctrl.listSOOwners.size());
-        System.AssertEquals(cAmounts, ctrl.listOpportunities.size());
+        System.AssertEquals(cRequests, ctrl.listOpportunities.size());
         
         ctrl.AddMoreEmptyRows();
-        System.AssertEquals(cAmounts + ctrl.cEmptyOpportunityRecords, ctrl.listOpportunities.size());
+        System.AssertEquals(cRequests + ctrl.cEmptyOpportunityRecords, ctrl.listOpportunities.size());
         System.AssertEquals(true, ctrl.fHasListOpportunities);
         System.AssertEquals(0, ctrl.numberOfRecordsDirty);
         System.AssertEquals(null, ctrl.strSaveResults); 
@@ -114,12 +162,12 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         System.AssertEquals(null, ctrl.ownerid);
         System.AssertEquals(null, ctrl.listOpportunities);
         
-        ctrl.programname = cmp.Name;
+        ctrl.programname = listPrograms[0].Name;
         ctrl.ChangeProgram();
         ctrl.ownerid = user.Id;
         ctrl.ChangeOwner();
         ctrl.AddMoreEmptyRows();
-        System.AssertEquals(cAmounts + ctrl.cEmptyOpportunityRecords, ctrl.listOpportunities.size());
+        System.AssertEquals(1 + ctrl.cEmptyOpportunityRecords, ctrl.listOpportunities.size());
         System.AssertEquals(0, ctrl.numberOfRecordsDirty);
         
         ctrl.listOpportunities.get(0).Amount = 2;
@@ -127,12 +175,6 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         ctrl.OpportunitiesRecordModified();
         System.AssertEquals(1, ctrl.setOpportunitiesIdDirty.size());
         
-        Opportunity opp = ctrl.listOpportunities.get(ctrl.listOpportunities.size() - 1);
-        opp.OwnerId = user.id;
-        opp.AccountId = acc.id;
-        opp.Status__c = 'Completed';
-        opp.FGM_Base__Start_Date__c = system.today();
-        opp.Amount = null; // to test failure
         p.getParameters().put('usersIdDirtied', null);
         ctrl.OpportunitiesRecordModified();
         System.AssertEquals(1, ctrl.setOpportunitiesIdDirty.size());
@@ -144,8 +186,7 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         System.Assert(ctrl.strSaveResults.startsWith('Error'));
         ctrl.ChangeOwner();
         ctrl.SaveOpportunities();      
-        System.AssertEquals(0, ctrl.numberOfRecordsDirty);
-        
+        System.AssertEquals(0, ctrl.numberOfRecordsDirty);        
     }
 
     private static testMethod void testPageMessagesController() {
