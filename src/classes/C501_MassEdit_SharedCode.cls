@@ -148,7 +148,7 @@ global with sharing class C501_MassEdit_SharedCode {
         // Custom Client Filtering - find some way to get this from custom setting
         strSoql += ' and (NOT Name like \'NF %\')';
 
-        strSoql += ' order by CloseDate, Owner.Name ASC NULLS FIRST';
+        strSoql += ' order by FGM_Base__Lead_Program__r.Name, CloseDate, Owner.Name ASC NULLS FIRST';
         
         return Database.Query(strSoql); 
     }

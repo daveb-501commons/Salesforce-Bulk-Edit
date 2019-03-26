@@ -173,7 +173,9 @@
                 fixSearchIMG();
             </script>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <apex:commandLink action="{!AddMoreEmptyRows}" value="{!$Label.labelLinkAddMoreRows}" id="linkAdd" immediate="true" reRender="tblOpportunities" oncomplete="javascript:fixSearchIMG()"/>
+            <!--
+                <apex:commandLink action="{!AddMoreEmptyRows}" value="{!$Label.labelLinkAddMoreRows}" id="linkAdd" immediate="true" reRender="tblOpportunities" oncomplete="javascript:fixSearchIMG()"/>
+            -->
         </div> <!-- slds -->    
     </apex:form>
 </apex:page>

@@ -4,6 +4,11 @@
         <fullName>MassEditOpportunities</fullName>
         <description>specifies the list of fields to display in the Mass Edit Opportunities page.</description>
         <displayedFields>
+            <field>FGM_Base__Lead_Program__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
             <field>AccountId</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>

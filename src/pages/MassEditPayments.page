@@ -137,6 +137,10 @@
                     <apex:outputLink value="/{!payment.Id}">Go To Payment</apex:outputLink>
                 </apex:column> 
                 <apex:column styleClass="myTD reference" >
+                    <apex:facet name="header">Program</apex:facet>
+                    <apex:inputField value="{!payment.FGM_Base__Request__r.FGM_Base__Lead_Program__c}" styleClass="lookupInput" required="false" />
+                </apex:column> 
+                <apex:column styleClass="myTD reference" >
                     <apex:facet name="header">Request Owner</apex:facet>
                     <apex:inputField value="{!payment.FGM_Base__Request__r.OwnerId}" styleClass="lookupInput" required="false" />
                 </apex:column> 
@@ -177,7 +181,9 @@
                 fixSearchIMG();
             </script>
             &nbsp;&nbsp;&nbsp;&nbsp;
+            <!--
             <apex:commandLink action="{!AddMoreEmptyRows}" value="{!$Label.labelLinkAddMoreRows}" id="linkAdd" immediate="true" reRender="tblPayments" oncomplete="javascript:fixSearchIMG()"/>
+            -->
         </div> <!-- slds -->    
     </apex:form>
 </apex:page>

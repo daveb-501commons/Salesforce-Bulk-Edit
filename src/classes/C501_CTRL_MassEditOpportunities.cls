@@ -114,8 +114,8 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
             if (oppDateFilter == null) {
                 oppDateFilter = new Opportunity();
                 
-                oppDateFilter.FGM_Base__Start_Date__c = Date.newInstance(system.today().addYears(-1).year(), 1, 1);
-                oppDateFilter.FGM_Base__End_Date__c = system.today();
+                oppDateFilter.FGM_Base__Start_Date__c = Date.newInstance(system.today().year(), 1, 1);
+                oppDateFilter.FGM_Base__End_Date__c = Date.newInstance(system.today().year(), 12, 31);
             }
             return oppDateFilter;
         }

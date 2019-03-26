@@ -66,6 +66,9 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
         if (!listStrFields.contains('FGM_Base__Request__r.OwnerId')) {
             listStrFields.add('FGM_Base__Request__r.OwnerId');
         }
+        if (!listStrFields.contains('FGM_Base__Request__r.FGM_Base__Lead_Program__c')) {
+            listStrFields.add('FGM_Base__Request__r.FGM_Base__Lead_Program__c');
+        }
     }   
     
     // holds the currently selected Program in the Program dropdown
@@ -117,8 +120,8 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
             if (paymentDateFilter == null) {
                 paymentDateFilter = new FGM_Base__Payment__c();
                 
-                paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c = Date.newInstance(system.today().addYears(-1).year(), 1, 1);
-                paymentDateFilter.FGM_Base__Payment_Date__c = system.today();
+                paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c = Date.newInstance(system.today().year(), 1, 1);
+                paymentDateFilter.FGM_Base__Payment_Date__c = Date.newInstance(system.today().year(), 12, 31);
             }
             return paymentDateFilter;
         }
@@ -186,7 +189,7 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
             strSoql += ' and FGM_Base__Scheduled_Payment_Date__c <= :dtEnd ';
         }
 
-        strSoql += ' order by FGM_Base__Scheduled_Payment_Date__c, FGM_Base__Request__r.Owner.Name ASC NULLS FIRST';
+        strSoql += ' order by FGM_Base__Request__r.FGM_Base__Lead_Program__r.Name, FGM_Base__Scheduled_Payment_Date__c, FGM_Base__Request__r.Owner.Name ASC NULLS FIRST';
         
         listPayments = Database.Query(strSoql); 
     }
