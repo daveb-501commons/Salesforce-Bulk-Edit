@@ -176,6 +176,7 @@
             <!--
                 <apex:commandLink action="{!AddMoreEmptyRows}" value="{!$Label.labelLinkAddMoreRows}" id="linkAdd" immediate="true" reRender="tblOpportunities" oncomplete="javascript:fixSearchIMG()"/>
             -->
+            <apex:outputLink value="/006/e?retURL=%2F006%2Fo">New Request</apex:outputLink>
         </div> <!-- slds -->    
     </apex:form>
 </apex:page>

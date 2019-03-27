@@ -148,9 +148,19 @@ global with sharing class C501_MassEdit_SharedCode {
         // Custom Client Filtering - find some way to get this from custom setting
         strSoql += ' and (NOT Name like \'NF %\')';
 
-        strSoql += ' order by FGM_Base__Lead_Program__r.Name, CloseDate, Owner.Name ASC NULLS FIRST';
-        
-        return Database.Query(strSoql); 
+        List<Opportunity> opportunitiesUnordered = Database.Query(strSoql);
+
+        // Order Opportunities based on Scheduled Payment Date
+        List<Opportunity> opportunitiesOrdered = new List<Opportunity>();
+        for (Id requestId :requestIds) {
+            for (Opportunity opportunity :opportunitiesUnordered) {
+                if (opportunity.Id == requestId) {
+                    opportunitiesOrdered.add(opportunity);
+                }
+            }
+        }
+
+        return opportunitiesOrdered;
     }
 
     // global utility used to detect whether the Foundation Grant Manager (Foundation Connect) is installed in this instance.

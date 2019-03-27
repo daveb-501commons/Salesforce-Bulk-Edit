@@ -184,6 +184,7 @@
             <!--
             <apex:commandLink action="{!AddMoreEmptyRows}" value="{!$Label.labelLinkAddMoreRows}" id="linkAdd" immediate="true" reRender="tblPayments" oncomplete="javascript:fixSearchIMG()"/>
             -->
+            <apex:outputLink value="/a0C/e?retURL=%2Fa0C%2Fo">New Payment</apex:outputLink>
         </div> <!-- slds -->    
     </apex:form>
 </apex:page>

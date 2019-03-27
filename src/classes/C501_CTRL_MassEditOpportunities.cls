@@ -223,32 +223,44 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
         
         try {
             // create two lists: one to update and one to insert.
-            List<Opportunity> listOpportunitiesCreate = new List<Opportunity>();
             List<Opportunity> listOpportunitiesUpdate = new List<Opportunity>();
+            
+            // Disabled creating new opportunitie on the Mass Edit page - too many required fields so just change new row to New Request which takes user to a new screen to create request
+            List<Opportunity> listOpportunitiesCreate = new List<Opportunity>();
 
             for (Opportunity opp : listOpportunities) {
                 if (opp.Id != null) {
                     // we couldn't reliably mark dirty records in all scenarios,
                     // so we've decided it is better to always update all records.
                     //if (setOpportunitiesIdDirty.contains(opp.Id)) 
-                        listOpportunitiesUpdate.add(opp);
+                    listOpportunitiesUpdate.add(opp);
+
                 } else if (opp.OwnerId != null) {
                     listOpportunitiesCreate.add(opp);
                 }
             }
             
-            update listOpportunitiesUpdate;
-           
-            insert listOpportunitiesCreate;
+            if (!listOpportunitiesUpdate.isEmpty()) {
+                update listOpportunitiesUpdate;
+            }
+            
+            /*if (!listOpportunitiesCreate.isEmpty()) {
+                insert listOpportunitiesCreate;
+            }*/
             
             strSaveResults = String.valueOf(listOpportunitiesCreate.size() + listOpportunitiesUpdate.size()) + ' ' + Label.labelMassEditOpportunitiesSaveSuccess;
             ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.CONFIRM, strSaveResults));
+
             // successful save, so clear out dirty list
             setOpportunitiesIdDirty = null;
+
             return null;            
+
         } catch (Exception e) {
+
             strSaveResults = Label.labelMassEditOpportunitiesErrorOnSave;
             ApexPages.addMessages(e); 
+
             return null;
         }
     }

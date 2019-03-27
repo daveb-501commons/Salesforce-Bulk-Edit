@@ -251,8 +251,11 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
         
         try {
             // create two lists: one to update and one to insert.
-            List<FGM_Base__Payment__c> listPaymentsCreate = new List<FGM_Base__Payment__c>();
+
             List<FGM_Base__Payment__c> listPaymentsUpdate = new List<FGM_Base__Payment__c>();
+            
+            // Disabled creating new payments on the Mass Edit page - too many required fields so just change new row to New Payment which takes user to a new screen to create payment
+            List<FGM_Base__Payment__c> listPaymentsCreate = new List<FGM_Base__Payment__c>();
 
             for (FGM_Base__Payment__c payment : listPayments) {
                 if (payment.Id != null) {
@@ -265,9 +268,13 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
                 }
             }
             
-            update listPaymentsUpdate;
+            if (!listPaymentsUpdate.isEmpty()) {
+                update listPaymentsUpdate;
+            }
            
-            insert listPaymentsCreate;
+            /*if (!listPaymentsCreate.isEmpty()) {
+                insert listPaymentsCreate;
+            }*/
             
             strSaveResults = String.valueOf(listPaymentsCreate.size() + listPaymentsUpdate.size()) + ' ' + Label.labelMassEditPaymentsSaveSuccess;
             ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.CONFIRM, strSaveResults));
