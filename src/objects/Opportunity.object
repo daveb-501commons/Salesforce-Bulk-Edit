@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <fieldSets>
-        <fullName>MassEditOpportunities</fullName>
-        <description>specifies the list of fields to display in the Mass Edit Opportunities page.</description>
+        <fullName>MassEditOpportunities_DoNotChange</fullName>
+        <description>Make a copy of this field set if you want to make a change. Specifies the list of fields to display in the Mass Edit Opportunities page.</description>
         <displayedFields>
             <field>FGM_Base__Lead_Program__c</field>
             <isFieldManaged>false</isFieldManaged>
@@ -48,6 +48,6 @@
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
-        <label>MassEditOpportunities</label>
+        <label>Mass Edit Opportunities (System File - Do not change)</label>
     </fieldSets>
 </CustomObject>

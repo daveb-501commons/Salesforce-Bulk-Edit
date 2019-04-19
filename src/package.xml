@@ -62,8 +62,8 @@
         <name>CustomLabels</name>
     </types>
     <types>
-        <members>Opportunity.MassEditOpportunities</members>
-        <members>FGM_Base__Payment__c.MassEditPayments</members>
+        <members>Opportunity.MassEditOpportunities_DoNotChange</members>
+        <members>FGM_Base__Payment__c.MassEditPayments_DoNotChange</members>
         <name>FieldSet</name>
     </types>
     <types>
