@@ -214,7 +214,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
         return null;
     }
     
-    //save the Opportunities created or modified
+    // Save the Opportunities modified
     global virtual PageReference SaveOpportunities() {
         
         if (listOpportunities == null) return null;
@@ -222,12 +222,8 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
         strSaveResults = null;
         
         try {
-            // create two lists: one to update and one to insert.
             List<Opportunity> listOpportunitiesUpdate = new List<Opportunity>();
             
-            // Disabled creating new opportunitie on the Mass Edit page - too many required fields so just change new row to New Request which takes user to a new screen to create request
-            List<Opportunity> listOpportunitiesCreate = new List<Opportunity>();
-
             for (Opportunity opp : listOpportunities) {
                 if (opp.Id != null) {
                     // we couldn't reliably mark dirty records in all scenarios,
@@ -235,8 +231,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
                     //if (setOpportunitiesIdDirty.contains(opp.Id)) 
                     listOpportunitiesUpdate.add(opp);
 
-                } else if (opp.OwnerId != null) {
-                    listOpportunitiesCreate.add(opp);
+                    System.debug('*****C501_CTRL_MassEditOpportunities::SaveOpportunities - Id: ' + opp.Id + ' Approval Level: ' + opp.Approval_Level__c);
                 }
             }
             
@@ -244,11 +239,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
                 update listOpportunitiesUpdate;
             }
             
-            /*if (!listOpportunitiesCreate.isEmpty()) {
-                insert listOpportunitiesCreate;
-            }*/
-            
-            strSaveResults = String.valueOf(listOpportunitiesCreate.size() + listOpportunitiesUpdate.size()) + ' ' + Label.labelMassEditOpportunitiesSaveSuccess;
+            strSaveResults = String.valueOf(listOpportunitiesUpdate.size()) + ' ' + Label.labelMassEditOpportunitiesSaveSuccess;
             ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.CONFIRM, strSaveResults));
 
             // successful save, so clear out dirty list

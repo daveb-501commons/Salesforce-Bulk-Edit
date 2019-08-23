@@ -33,61 +33,13 @@
         <value>Warning</value>
     </labels>
     <labels>
-        <fullName>PermissionCreateException</fullName>
-        <categories>CampaignTools,Exceptions</categories>
-        <language>en_US</language>
-        <protected>true</protected>
-        <shortDescription>PermissionCreateException</shortDescription>
-        <value>User does not have permissions to create {0}.</value>
-    </labels>
-    <labels>
-        <fullName>PermissionDeleteException</fullName>
-        <categories>CampaignTools,Exceptions</categories>
-        <language>en_US</language>
-        <protected>true</protected>
-        <shortDescription>PermissionDeleteException</shortDescription>
-        <value>User does not have permissions to delete {0}.</value>
-    </labels>
-    <labels>
-        <fullName>PermissionReadException</fullName>
-        <categories>CampaignTools,Exceptions</categories>
-        <language>en_US</language>
-        <protected>true</protected>
-        <shortDescription>PermissionReadException</shortDescription>
-        <value>User does not have permissions to view {0}.</value>
-    </labels>
-    <labels>
-        <fullName>PermissionUpdateException</fullName>
-        <categories>CampaignTools,Exceptions</categories>
-        <language>en_US</language>
-        <protected>true</protected>
-        <shortDescription>PermissionUpdateException</shortDescription>
-        <value>User does not have permissions to update {0}.</value>
-    </labels>
-    <labels>
-        <fullName>labelButtonClose</fullName>
-        <categories>MassEditRequests</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>label for the Close button on various pages</shortDescription>
-        <value>Close</value>
-    </labels>
-    <labels>
-        <fullName>labelButtonEdit</fullName>
-        <categories>PersonalSiteUserInfo</categories>
-        <language>en_US</language>
-        <protected>true</protected>
-        <shortDescription>label for Update button</shortDescription>
-        <value>Update</value>
-    </labels>
-   <labels>
         <fullName>labelButtonSave</fullName>
         <categories>MassEditRequests</categories>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>The label for the Save button used on several pages.</shortDescription>
         <value>Save</value>
-    </labels>    
+    </labels>
     <labels>
         <fullName>labelLinkAddMoreRows</fullName>
         <categories>MassEditRequests</categories>
@@ -96,53 +48,6 @@
         <shortDescription>label for Add More Rows link in Mass Edit page.</shortDescription>
         <value>Add new row</value>
     </labels>
-    <labels>
-        <fullName>labelListViewFirst</fullName>
-        <categories>MassEditRequests</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>label for First link in list view</shortDescription>
-        <value>First</value>
-    </labels>
-    <labels>
-        <fullName>labelListViewLast</fullName>
-        <categories>MassEditRequests</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>label for Last link in list view</shortDescription>
-        <value>Last</value>
-    </labels>
-    <labels>
-        <fullName>labelListViewPageInfo</fullName>
-        <categories>MassEditRequests</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>label for page info in list view</shortDescription>
-        <value>&amp;nbsp;&amp;nbsp;&amp;nbsp;Page {0} of {1} &amp;nbsp;&amp;nbsp;({2} records)</value>
-    </labels>
-    <labels>
-        <fullName>labelListViewPrevious</fullName>
-        <categories>MassEditRequests</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>label for Previous link in list view</shortDescription>
-        <value>Previous</value>
-    </labels>    <labels>
-        <fullName>labelListViewNext</fullName>
-        <categories>MassEditRequests</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>label for Next link in list view</shortDescription>
-        <value>Next</value>
-    </labels>
-    <labels>
-        <fullName>labelMassEditOpportunitiesTitle</fullName>
-        <categories>MassEditRequests</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>title for the Mass Edit Opportunities page</shortDescription>
-        <value>Mass Edit Requests</value>
-    </labels>    
     <labels>
         <fullName>labelMassEditOpportunitiesDateFilterFrom</fullName>
         <categories>MassEditRequests</categories>
@@ -192,28 +97,12 @@
         <value>Requests records have been saved.</value>
     </labels>
     <labels>
-        <fullName>labelMassEditPaymentsTitle</fullName>
-        <categories>MassEditPayments</categories>
+        <fullName>labelMassEditOpportunitiesTitle</fullName>
+        <categories>MassEditRequests</categories>
         <language>en_US</language>
         <protected>false</protected>
-        <shortDescription>title for the Mass Edit Payments page</shortDescription>
-        <value>Mass Edit Payments</value>
-    </labels>    
-    <labels>
-        <fullName>labelMassEditPaymentsHelp</fullName>
-        <categories>MassEditPayments</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>help text for the Mass Edit Payments page</shortDescription>
-        <value>Choose the Program and an optional Request Owner then the page will display any existing Payments records.  Click Add new record to create new payments.  Update all rows as appropriate, and then click Save.  Requests with Pipeline equals Closed or Withdrawn are not included.</value>
-    </labels>
-    <labels>
-        <fullName>labelMassEditPaymentsSaveSuccess</fullName>
-        <categories>MassEditPayments</categories>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>message displayed when Mass Edit Payments saves successfully.</shortDescription>
-        <value>Payments records have been saved.</value>
+        <shortDescription>title for the Mass Edit Opportunities page</shortDescription>
+        <value>Mass Edit Requests</value>
     </labels>
     <labels>
         <fullName>labelMassEditPaymentsDateFilterFrom</fullName>
@@ -240,6 +129,78 @@
         <value>Errors were encountered trying to save the Payments.</value>
     </labels>
     <labels>
+        <fullName>labelMassEditPaymentsHelp</fullName>
+        <categories>MassEditPayments</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>help text for the Mass Edit Payments page</shortDescription>
+        <value>Choose the Program and an optional Request Owner then the page will display any existing Payments records.  Click Add new record to create new payments.  Update all rows as appropriate, and then click Save.  Requests with Pipeline equals Closed or Withdrawn are not included.</value>
+    </labels>
+    <labels>
+        <fullName>labelMassEditPaymentsSaveSuccess</fullName>
+        <categories>MassEditPayments</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>message displayed when Mass Edit Payments saves successfully.</shortDescription>
+        <value>Payments records have been saved.</value>
+    </labels>
+    <labels>
+        <fullName>labelMassEditPaymentsTitle</fullName>
+        <categories>MassEditPayments</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>title for the Mass Edit Payments page</shortDescription>
+        <value>Mass Edit Payments</value>
+    </labels>
+    <labels>
+        <fullName>labelMassEditContribProgramsDateFilterFrom</fullName>
+        <categories>MassEditContribPrograms</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>label for the date filter From field.</shortDescription>
+        <value>Scheduled Payment Date From</value>
+    </labels>
+    <labels>
+        <fullName>labelMassEditContribProgramsDateFilterTo</fullName>
+        <categories>MassEditContribPrograms</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>label for the date filter section To field.</shortDescription>
+        <value>To</value>
+    </labels>
+    <labels>
+        <fullName>labelMassEditContribProgramsErrorOnSave</fullName>
+        <categories>MassEditContribPrograms</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>error message when Mass Edit ContributingPrograms save fails.</shortDescription>
+        <value>Errors were encountered trying to save the ContributingPrograms.</value>
+    </labels>
+    <labels>
+        <fullName>labelMassEditContribProgramsHelp</fullName>
+        <categories>MassEditContribPrograms</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>help text for the Mass Edit ContributingPrograms page</shortDescription>
+        <value>Choose the Program and an optional Request Owner then the page will display any existing ContributingPrograms records.  Click Add new record to create new ContributingPrograms.  Update all rows as appropriate, and then click Save.  Requests with Pipeline equals Closed or Withdrawn are not included.</value>
+    </labels>
+    <labels>
+        <fullName>labelMassEditContribProgramsSaveSuccess</fullName>
+        <categories>MassEditContribPrograms</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>message displayed when Mass Edit ContributingPrograms saves successfully.</shortDescription>
+        <value>ContributingPrograms records have been saved.</value>
+    </labels>
+    <labels>
+        <fullName>labelMassEditContribProgramsTitle</fullName>
+        <categories>MassEditContribPrograms</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>title for the Mass Edit ContributingPrograms page</shortDescription>
+        <value>Mass Edit ContributingPrograms</value>
+    </labels>
+    <labels>
         <fullName>labelMessageLoading</fullName>
         <categories>MassEditRequests</categories>
         <language>en_US</language>
@@ -262,5 +223,5 @@
         <protected>false</protected>
         <shortDescription>label for Show More on list views</shortDescription>
         <value>Show more</value>
-    </labels>    
+    </labels>
 </CustomLabels>

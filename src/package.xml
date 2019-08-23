@@ -2,6 +2,8 @@
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Salesforce-Bulk-Edit</fullName>
     <types>
+        <members>C501_CTRL_MassEditContribPrograms</members>
+        <members>C501_CTRL_MassEditContribPrograms_TEST</members>
         <members>C501_CTRL_MassEditOpportunities</members>
         <members>C501_CTRL_MassEditOpportunities_TEST</members>
         <members>C501_CTRL_MassEditPayments</members>
@@ -17,43 +19,45 @@
         <name>ApexComponent</name>
     </types>
     <types>
+        <members>MassEditContribPrograms</members>
         <members>MassEditOpportunities</members>
         <members>MassEditPayments</members>
         <name>ApexPage</name>
     </types>
     <types>
+        <members>Opportunity</members>
+        <members>FGM_Base__Contributing_Programs__c</members>
+        <members>FGM_Base__Payment__c</members>
+        <name>CustomObject</name>
+    </types>    
+    <types>
+        <members>PageMessagesConfirm</members>
+        <members>PageMessagesError</members>
+        <members>PageMessagesFatal</members>
+        <members>PageMessagesWarning</members>
+        <members>labelButtonSave</members>
+        <members>labelLinkAddMoreRows</members>
+        <members>labelMassEditContribProgramsDateFilterFrom</members>
+        <members>labelMassEditContribProgramsDateFilterTo</members>
+        <members>labelMassEditContribProgramsErrorOnSave</members>
+        <members>labelMassEditContribProgramsHelp</members>
+        <members>labelMassEditContribProgramsSaveSuccess</members>
+        <members>labelMassEditContribProgramsTitle</members>
         <members>labelMassEditOpportunitiesDateFilterFrom</members>
         <members>labelMassEditOpportunitiesDateFilterTo</members>
-        <members>labelButtonSave</members>
-        <members>labelButtonEdit</members>
-        <members>labelButtonClose</members>
-        <members>PermissionUpdateException</members>
-        <members>PermissionReadException</members>
-        <members>PermissionDeleteException</members>
-        <members>PermissionCreateException</members>
-        <members>PageMessagesWarning</members>
-        <members>PageMessagesFatal</members>
-        <members>PageMessagesError</members>
-        <members>PageMessagesConfirm</members>
-        <members>labelMessageSaving</members>
-        <members>labelMessageLoading</members>
-        <members>labelMassEditOpportunitiesSaveSuccess</members>
-        <members>labelMassEditOpportunitiesOptional</members>
-        <members>labelMassEditOpportunitiesHelp</members>
-        <members>labelMassEditOpportunitiesTitle</members>
         <members>labelMassEditOpportunitiesErrorOnSave</members>
-        <members>labelMassEditPaymentsSaveSuccess</members>
-        <members>labelMassEditPaymentsHelp</members>
-        <members>labelMassEditPaymentsErrorOnSave</members>
+        <members>labelMassEditOpportunitiesHelp</members>
+        <members>labelMassEditOpportunitiesOptional</members>
+        <members>labelMassEditOpportunitiesSaveSuccess</members>
+        <members>labelMassEditOpportunitiesTitle</members>
         <members>labelMassEditPaymentsDateFilterFrom</members>
         <members>labelMassEditPaymentsDateFilterTo</members>
+        <members>labelMassEditPaymentsErrorOnSave</members>
+        <members>labelMassEditPaymentsHelp</members>
+        <members>labelMassEditPaymentsSaveSuccess</members>
         <members>labelMassEditPaymentsTitle</members>
-        <members>labelLinkAddMoreRows</members>
-        <members>labelListViewFirst</members>
-        <members>labelListViewLast</members>
-        <members>labelListViewNext</members>
-        <members>labelListViewPrevious</members>
-        <members>labelListViewPageInfo</members>
+        <members>labelMessageLoading</members>
+        <members>labelMessageSaving</members>
         <members>labelShowMore</members>
         <name>CustomLabel</name>
     </types>
@@ -62,8 +66,9 @@
         <name>CustomLabels</name>
     </types>
     <types>
-        <members>Opportunity.MassEditOpportunities_DoNotChange</members>
-        <members>FGM_Base__Payment__c.MassEditPayments_DoNotChange</members>
+        <members>FGM_Base__Contributing_Programs__c.MassEditContribPrograms</members>
+        <members>FGM_Base__Payment__c.MassEditPayments</members>
+        <members>Opportunity.MassEditOpportunities</members>
         <name>FieldSet</name>
     </types>
     <types>
