@@ -25,12 +25,6 @@
         <name>ApexPage</name>
     </types>
     <types>
-        <members>Opportunity</members>
-        <members>FGM_Base__Contributing_Programs__c</members>
-        <members>FGM_Base__Payment__c</members>
-        <name>CustomObject</name>
-    </types>    
-    <types>
         <members>PageMessagesConfirm</members>
         <members>PageMessagesError</members>
         <members>PageMessagesFatal</members>

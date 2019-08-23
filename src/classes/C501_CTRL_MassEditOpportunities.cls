@@ -230,13 +230,18 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
                     // so we've decided it is better to always update all records.
                     //if (setOpportunitiesIdDirty.contains(opp.Id)) 
                     listOpportunitiesUpdate.add(opp);
-
-                    System.debug('*****C501_CTRL_MassEditOpportunities::SaveOpportunities - Id: ' + opp.Id + ' Approval Level: ' + opp.Approval_Level__c);
                 }
             }
             
             if (!listOpportunitiesUpdate.isEmpty()) {
-                update listOpportunitiesUpdate;
+                System.debug('*****C501_CTRL_MassEditOpportunities::SaveOpportunities Before Update');
+                Database.SaveResult[] results = Database.update(listOpportunitiesUpdate, false);
+                for (Database.SaveResult result : results) {
+                    if (!result.isSuccess()) {
+                        System.debug('*****C501_CTRL_MassEditOpportunities::SaveOpportunities Save Error - Errors: ' + result.getErrors());
+                    }
+                }
+                System.debug('*****C501_CTRL_MassEditOpportunities::SaveOpportunities After Update');
             }
             
             strSaveResults = String.valueOf(listOpportunitiesUpdate.size()) + ' ' + Label.labelMassEditOpportunitiesSaveSuccess;

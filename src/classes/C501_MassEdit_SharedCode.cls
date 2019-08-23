@@ -151,10 +151,13 @@ global with sharing class C501_MassEdit_SharedCode {
         List<Opportunity> opportunitiesUnordered = Database.Query(strSoql);
 
         // Order Opportunities based on Scheduled Payment Date
+        Set<Id> opportunityIds = new Set<Id>();
         List<Opportunity> opportunitiesOrdered = new List<Opportunity>();
         for (Id requestId :requestIds) {
             for (Opportunity opportunity :opportunitiesUnordered) {
-                if (opportunity.Id == requestId) {
+                if (opportunity.Id == requestId && !opportunityIds.contains(opportunity.Id)) {
+                    
+                    opportunityIds.add(opportunity.Id);
                     opportunitiesOrdered.add(opportunity);
                 }
             }

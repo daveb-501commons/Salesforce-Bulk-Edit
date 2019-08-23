@@ -5,3 +5,4 @@
 .sfdx/typings/lwc/schema.d.ts
 .sfdx/tools/apex.db
 .vscode/settings.json
+.sfdx/sfdx-config.json

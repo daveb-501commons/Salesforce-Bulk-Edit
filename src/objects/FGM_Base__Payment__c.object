@@ -40,6 +40,4 @@
         </displayedFields>
         <label>Mass Edit Payments</label>
     </fieldSets>
-    <label>Payment</label>
-    <pluralLabel>Payments</pluralLabel>
 </CustomObject>

@@ -10,6 +10,4 @@
         </displayedFields>
         <label>Mass Edit Contributing Program</label>
     </fieldSets>
-    <label>Contributing Program</label>
-    <pluralLabel>Contributing Programs</pluralLabel>
 </CustomObject>
