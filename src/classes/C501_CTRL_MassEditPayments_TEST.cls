@@ -148,10 +148,10 @@ private with sharing class C501_CTRL_MassEditPayments_TEST {
         System.AssertEquals(user.Id, ctrl.ownerid);
         System.Assert(ctrl.listSOPrograms.size() > 1);
         System.AssertEquals(2, ctrl.listSOOwners.size());
-        System.AssertEquals(cRequests, ctrl.listPayments.size());
+        System.AssertEquals(cRequests, ctrl.listPayments.size() - 1);  // Subtract 1 for the row total that is added by controller
         
         ctrl.AddMoreEmptyRows();
-        System.AssertEquals(cRequests + ctrl.cEmptyPaymentRecords, ctrl.listPayments.size());
+        System.AssertEquals(cRequests + ctrl.cEmptyPaymentRecords, ctrl.listPayments.size() - 1);  // Subtract 1 for the row total that is added by controller
         System.AssertEquals(true, ctrl.fHaslistPayments);
         System.AssertEquals(0, ctrl.numberOfRecordsDirty);
         System.AssertEquals(null, ctrl.strSaveResults); 

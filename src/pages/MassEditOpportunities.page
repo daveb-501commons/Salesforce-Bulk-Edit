@@ -57,6 +57,7 @@
     <apex:form id="vfform">
         <c:C501_UTIL_NavigateBack recordId="{!idRedirect}" redirect="{!redirect}"/>
         <div class="sfdo213">
+
             <!-- PAGE SPINNER -->
             <apex:actionStatus id="retrieveStatus" 
                 onstart="document.getElementById('divLoading').style.display='block';"
@@ -67,6 +68,7 @@
                     <div class="slds-spinner__dot-b"></div>
                 </div>
             </div>
+
             <!-- PAGE HEADER -->
             <div class="slds-page-header" role="banner">
                 <div class="slds-grid">
@@ -76,12 +78,16 @@
     
                     <div class="slds-col--padded slds-no-flex slds-align-middle">
                         <div class="slds-button-group" role="group">
-                            <apex:commandButton styleClass="slds-button slds-button--brand" action="{!SaveOpportunities}" value="{!$Label.labelButtonSave}" id="btnSave" immediate="false" reRender="vfform"/>
+                            <apex:panelGrid columns="2" width="100%">
+                                <apex:commandButton styleClass="slds-button slds-button--neutral" action="{!NewOpportunity}" value="{!$Label.labelButtonNew}" id="btnNew" immediate="false" reRender="vfform,tblOpportunitiesViewOnly"/>
+                                <apex:commandButton styleClass="slds-button slds-button--brand" action="{!SaveOpportunities}" value="{!$Label.labelButtonSave}" id="btnSave" immediate="false" reRender="vfform,tblOpportunitiesViewOnly"/>
+                            </apex:panelGrid>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- /PAGE HEADER -->
+
             <c:C501_UTIL_PageMessages />
             <p class="slds-p-around--medium"><apex:outputText value="{!$Label.labelMassEditOpportunitiesHelp}" style="font-style:italic" /></p>
             <fieldset class="slds-form">
@@ -91,7 +97,7 @@
                             Program
                         </apex:outputLabel>
                         <apex:selectList id="ddlPrograms" value="{!programname}" required="false" size="1" styleClass="slds-select" disabled="{!listSOPrograms.size=1}">
-                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlOwners,tblOpportunities" status="retrieveStatus" action="{!ChangeProgram}" />
+                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlOwners,tblOpportunities,tblOpportunitiesViewOnly" status="retrieveStatus" action="{!ChangeProgram}" />
                             <apex:selectOptions value="{!listSOPrograms}" /> 
                         </apex:selectList>
                     </div>
@@ -100,7 +106,7 @@
                             Request Owner
                         </apex:outputLabel>
                         <apex:selectList id="ddlOwners" value="{!ownerid}" required="false" size="1" styleClass="slds-select" disabled="{!listSOOwners.size=1}">
-                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlOwners,tblOpportunities" status="retrieveStatus" action="{!ChangeOwner}" />
+                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlOwners,tblOpportunities,tblOpportunitiesViewOnly" status="retrieveStatus" action="{!ChangeOwner}" />
                             <apex:selectOptions value="{!listSOOwners}" /> 
                         </apex:selectList>
                     </div>
@@ -113,7 +119,7 @@
                             {!$Label.labelMassEditOpportunitiesDateFilterFrom}
                         </apex:outputLabel>
                         <apex:inputField id="fldDateFrom" required="false" value="{!oppDateFilter.FGM_Base__Start_Date__c}" label="" styleClass="slds-input dateOnlyInput" >
-                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlPrograms,ddlOwners,tblOpportunities" status="retrieveStatus" action="{!ChangeDate}" />
+                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlPrograms,ddlOwners,tblOpportunities,tblOpportunitiesViewOnly" status="retrieveStatus" action="{!ChangeDate}" />
                         </apex:inputField>
                     </div>
                     <div class="slds-col--padded slds-size--1-of-3 slds-form-element">
@@ -121,39 +127,74 @@
                             {!$Label.labelMassEditOpportunitiesDateFilterTo}
                         </apex:outputLabel>
                         <apex:inputField id="fldDateTo" required="false" value="{!oppDateFilter.FGM_Base__End_Date__c}" label="" styleClass="slds-input dateOnlyInput" >
-                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlPrograms,ddlOwners,tblOpportunities" status="retrieveStatus" action="{!ChangeDate}" />
+                            <apex:actionSupport immediate="false" event="onchange" rerender="ddlPrograms,ddlOwners,tblOpportunities,tblOpportunitiesViewOnly" status="retrieveStatus" action="{!ChangeDate}" />
                         </apex:inputField>
                     </div>
                     <div class="slds-col--padded slds-size--1-of-3"/>
                 </div> 
-            </fieldset>   
-            <apex:dataTable value="{!listOpportunities}" var="opp" id="tblOpportunities" 
-                            styleClass="slds-table slds-table--compact slds-table--bordered"
-                            headerClass="slds-text-heading--label slds-theme--shade" style="width:100%" >  
+            </fieldset>
+
+            <apex:pageblock title="Request Summary">   
+                <apex:dataTable value="{!listOpportunitiesViewOnly}" var="opp" id="tblOpportunitiesViewOnly" 
+                                styleClass="slds-table slds-table--compact slds-table--bordered"
+                                headerClass="slds-text-heading--label slds-theme--shade"
+                                style="width:100%">  
+                                
+                    <!-- Add Admin Fields -->
+                    <apex:column styleClass="myTD reference" >
+                        <apex:facet name="header">Request</apex:facet>
+                        <apex:outputLink value="/{!opp.Id}">{!opp.FGM_Base__Request_Number__c}</apex:outputLink>
+                    </apex:column> 
+                                            
+                    <!-- Add Field Set Fields -->
+                    <apex:repeat value="{!$ObjectType.Opportunity.FieldSets.Mass_Edit_Opportunities_ViewOnly}" var="f" >
+                        <apex:column >
+                            <apex:facet name="header">{!f.Label}</apex:facet>
+
+                            <!-- using $###,###,###,##0 instead of currency so .00 don't show -->
+                            <apex:outputText value="{0, number, $###,###,###,##0}" rendered="{!f.Type == 'currency' && opp[f] >= 0}" style="font-weight:bolder;">
+                                <apex:param value="{!opp[f]}"/>  
+                            </apex:outputText>
                             
-                <!-- Add Admin Fields -->
-                <apex:column styleClass="myTD reference" >
-                    <apex:facet name="header">Request</apex:facet>
-                    <apex:outputLink value="/{!opp.Id}">Go To Request</apex:outputLink>
-                </apex:column> 
-                                        
-                <!-- Add Field Set Fields -->
-                <apex:repeat value="{!$ObjectType.Opportunity.FieldSets.MassEditOpportunities}" var="f" >
-                    <apex:column styleClass="myTD {!f.Type} {!IF($ObjectType['Opportunity'].fields[f].dependentPicklist,
-                                                IF(f.Type == 'picklist', 'dependentPicklistFixup', 'dependentMultiPicklistFixup'),'')}" >
-                        <apex:facet name="header">{!f.Label + IF(f.DBRequired, ' *', '')}</apex:facet>
-                        <apex:inputField value="{!opp[f]}" 
-                                    styleClass="{!CASE(f.Type, 
-                                                    'reference', 'lookupInput', 
-                                                    'picklist', 'slds-select',
-                                                    'multipicklist', 'slds-select multipicklistSLDSFixup',
-                                                    'boolean', 'slds-checkbox',
-                                                    'textarea', 'slds-textarea',
-                                                    'slds-input')}"
-                                         required="false" id="inputX"/>  <!-- not required, or you can't submit empty rows! -->
-                    </apex:column>
-                </apex:repeat>
-            </apex:dataTable>
+                            <apex:outputText value="{0, number, '('$###,###,###,##0')'}" rendered="{!f.Type == 'currency' && opp[f] < 0}" style="font-weight:bolder;">
+                                <apex:param value="{!ABS(opp[f])}"/>  
+                            </apex:outputText>
+
+                            <apex:outputText value="{!opp[f]}" rendered="{!NOT(f.Type == 'currency')}" 
+                                style="{!CASE(f.Label,
+                                    'Lead Program', IF(opp[f] == programname, '', 'font-weight:bolder;color:red;'),'')}"
+                                id="outputX"/>
+                        </apex:column>
+                    </apex:repeat>
+                </apex:dataTable>
+            </apex:pageblock>
+
+            <apex:pageblock title="Request Mass Edit">   
+                <apex:dataTable value="{!listOpportunities}" var="opp" id="tblOpportunities" 
+                                styleClass="slds-table slds-table--compact slds-table--bordered"
+                                headerClass="slds-text-heading--label slds-theme--shade"
+                                style="width:100%">  
+                                
+                    <!-- Add Field Set Fields -->
+                    <apex:repeat value="{!$ObjectType.Opportunity.FieldSets.MassEditOpportunities}" var="f" >
+                        <apex:column styleClass="myTD {!f.Type} {!IF($ObjectType['Opportunity'].fields[f].dependentPicklist,
+                                                    IF(f.Type == 'picklist', 'dependentPicklistFixup', 'dependentMultiPicklistFixup'),'')}" >
+                            <apex:facet name="header">{!IF(f.Type == 'currency','AMOUNT REQUESTED', f.Label + IF(f.DBRequired, ' *', ''))}</apex:facet>
+
+                            <apex:inputField value="{!opp[f]}" rendered="{!NOT(opp.Id == '')}"
+                                styleClass="{!CASE(f.Type, 
+                                                'reference', 'lookupInput', 
+                                                'picklist', 'slds-select',
+                                                'multipicklist', 'slds-select multipicklistSLDSFixup',
+                                                'boolean', 'slds-checkbox',
+                                                'textarea', 'slds-textarea',
+                                                'slds-input')}"
+                                required="false" id="inputX"/>  <!-- not required, or you can't submit empty rows! -->
+
+                        </apex:column>
+                    </apex:repeat>
+                </apex:dataTable>
+            </apex:pageblock>
 
             <script type="text/javascript">
                 function fixSearchIMG() {

@@ -4,17 +4,17 @@
         <fullName>MassEditOpportunities</fullName>
         <description>Make a copy with Name MassEditOpportunities if you want to make a change. Specifies the list of fields to display in the Mass Edit Opportunities page.</description>
         <displayedFields>
+            <field>FGM_Base__Request_Number__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
             <field>FGM_Base__Lead_Program__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
             <field>AccountId</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
-            <field>Name</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
@@ -39,11 +39,6 @@
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
-            <field>FGM_Base__Request_Number__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
             <field>Type</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
@@ -54,10 +49,802 @@
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
+            <field>Name</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
             <field>Approval_Level__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
         <label>Mass Edit Opportunities</label>
     </fieldSets>
+    <fieldSets>
+        <fullName>Mass_Edit_Opportunities_ViewOnly</fullName>
+        <description>View only fields for opportunity</description>
+        <displayedFields>
+            <field>Lead_Program__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Account_Name__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>StageName</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Amount</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Primary_Engagement__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Pledge_Payment_Engagement_Name__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Type</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Request_Owner__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Name</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Approval_Level__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>Mass Edit Opportunities ViewOnly</label>
+    </fieldSets>
+    <fields>
+        <fullName>Account_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Approval_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Approval Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Approval_Level__c</fullName>
+        <description>Approval Level - identify either level 1 through 5 to map what level of approval will be required for this particular request.</description>
+        <externalId>false</externalId>
+        <label>Approval Level</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Level 1 - Trustee approval via standard proposal summary (New)</fullName>
+                    <default>false</default>
+                    <label>Level 1 - Trustee approval via standard proposal summary (New)</label>
+                </value>
+                <value>
+                    <fullName>Level 2 - Trustee approval via shortened proposal summary (New)</fullName>
+                    <default>false</default>
+                    <label>Level 2 - Trustee approval via shortened proposal summary (New)</label>
+                </value>
+                <value>
+                    <fullName>Level 3 - Trustee briefing and approval (Pledge)</fullName>
+                    <default>false</default>
+                    <label>Level 3 - Trustee briefing and approval (Pledge)</label>
+                </value>
+                <value>
+                    <fullName>Level 4 - Executive Director approval (New)</fullName>
+                    <default>false</default>
+                    <label>Level 4 - Executive Director approval (New)</label>
+                </value>
+                <value>
+                    <fullName>Level 5 - Executive Director approval (Pledge)</fullName>
+                    <default>false</default>
+                    <label>Level 5 - Executive Director approval (Pledge)</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Approver__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Who approved this grant/contract? If both trustees are present during approval, please select &quot;Jeff &amp; Tricia Raikes&quot; as the approvers.</inlineHelpText>
+        <label>Approver</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Dennis Quirin</fullName>
+                    <default>false</default>
+                    <label>Dennis Quirin</label>
+                </value>
+                <value>
+                    <fullName>Jeff &amp; Tricia Raikes</fullName>
+                    <default>false</default>
+                    <label>Jeff &amp; Tricia Raikes</label>
+                </value>
+                <value>
+                    <fullName>Jeff_Raikes</fullName>
+                    <default>false</default>
+                    <label>Jeff Raikes</label>
+                </value>
+                <value>
+                    <fullName>Tricia Raikes</fullName>
+                    <default>false</default>
+                    <label>Tricia Raikes</label>
+                </value>
+                <value>
+                    <fullName>Gwen Sherman</fullName>
+                    <default>false</default>
+                    <label>Gwen Sherman</label>
+                </value>
+                <value>
+                    <fullName>Erin Kahn</fullName>
+                    <default>false</default>
+                    <label>Erin Kahn</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Award_Fiscal_Year__c</fullName>
+        <description>The fiscal year of the award based on the date of the award.</description>
+        <externalId>false</externalId>
+        <formula>TEXT( YEAR( FGM_Base__Award_Date__c ) )</formula>
+        <inlineHelpText>The fiscal year of the award based on the date of the award.</inlineHelpText>
+        <label>Award Fiscal Year</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Budget_del__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Budget</label>
+        <referenceTo>FGM_Base__Budget__c</referenceTo>
+        <relationshipLabel>Opportunities</relationshipLabel>
+        <relationshipName>Opportunities_del</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>C501_Internal_10_Day_Materials_Due_Date__c</fullName>
+        <description>Internal due date for team proposal summary/briefing documents due to executive director ten days in advance. Connected to automation/Process Builder.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Internal due date for team proposal summary/briefing documents due to executive director. This date is auto calculated to ten days prior to engagement date associated to planned engagement (approval) date.</inlineHelpText>
+        <label>Internal 10 Day Materials Due Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>C501_PipelineKanban__c</fullName>
+        <description>See if we can use this for manipulating Requests in Kanban view</description>
+        <externalId>false</externalId>
+        <label>PipelineKanban</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>C501_Request_Stages</valueSetName>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>C501_Request_ID_Case_Safe__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASESAFEID(Id)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Request ID Case Safe</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Communications_Restrictions_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Communications Restrictions Notes</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Communications_Restrictions__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Communications Restrictions</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Conflict_of_Interest_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Conflict of Interest Notes</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>DAF_Payment_Amount__c</fullName>
+        <description>7/28/16 Obsolete; do not use.  Track amount in payment object.
+
+Donor Advised Fund Payment Amount</description>
+        <externalId>false</externalId>
+        <label>zOBS DAF Payment Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>DAF_Source__c</fullName>
+        <description>7/28/16 Obsolete; do not use.  Track source as payment method in payment object.</description>
+        <externalId>false</externalId>
+        <label>zOBS DAF Source</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetName>DAF_Source</valueSetName>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Date_of_DAF_Request__c</fullName>
+        <description>7/28/16 Obsolete; do not use.  Track payment request date in payment object.</description>
+        <externalId>false</externalId>
+        <label>zOBS Date of DAF Request</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Declination_Reason__c</fullName>
+        <externalId>false</externalId>
+        <label>Declination Reason</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>StageName</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Outside of Guidelines</fullName>
+                    <default>false</default>
+                    <label>Outside of Guidelines</label>
+                </value>
+                <value>
+                    <fullName>Limited Resources</fullName>
+                    <default>false</default>
+                    <label>Limited Resources</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Declined</controllingFieldValue>
+                <valueName>Outside of Guidelines</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Declined</controllingFieldValue>
+                <valueName>Limited Resources</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Equity_Assessment__c</fullName>
+        <externalId>false</externalId>
+        <label>Equity Assessment</label>
+        <length>20768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Expenditure_Responsibility__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Expenditure Responsibility</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Fiscal_Agent__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Fiscal Agent</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>GIFTS_ID__c</fullName>
+        <description>ID from original GIFTS system.</description>
+        <externalId>false</externalId>
+        <label>GIFTS ID</label>
+        <length>40</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GIFTS_Reference_Nbr__c</fullName>
+        <description>Historical field for tracking the reference number that was previously stored in GIFTS.</description>
+        <externalId>false</externalId>
+        <label>GIFTS Reference Nbr</label>
+        <length>20</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>General_Ledger_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>FGM_Base__Lead_Program__r.FGM_Base__Account__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>General Ledger Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Geographical_Area_Served__c</fullName>
+        <externalId>false</externalId>
+        <label>Geographical Area Served</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>National</fullName>
+                    <default>false</default>
+                    <label>National</label>
+                </value>
+                <value>
+                    <fullName>West Region</fullName>
+                    <default>false</default>
+                    <label>West Region</label>
+                </value>
+                <value>
+                    <fullName>Northeast Region</fullName>
+                    <default>false</default>
+                    <label>Northeast Region</label>
+                </value>
+                <value>
+                    <fullName>South Region</fullName>
+                    <default>false</default>
+                    <label>South Region</label>
+                </value>
+                <value>
+                    <fullName>Midwest Region</fullName>
+                    <default>false</default>
+                    <label>Midwest Region</label>
+                </value>
+                <value>
+                    <fullName>State</fullName>
+                    <default>false</default>
+                    <label>State</label>
+                </value>
+                <value>
+                    <fullName>Local</fullName>
+                    <default>false</default>
+                    <label>Local</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Goal_Progress__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Were the major goals of the grant achieved? 
+If yes, what contributed to this success? If not, why not?</inlineHelpText>
+        <label>Goal Progress</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Goals__c</fullName>
+        <description>What were the major goals of the grant?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>What were the major goals of the grant?</inlineHelpText>
+        <label>Goals, Milestones and Deliverables</label>
+        <length>50000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Lead_Program__c</fullName>
+        <externalId>false</externalId>
+        <formula>FGM_Base__Lead_Program__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Lead Program</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Lessons_Learned__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Were there any lessons learned from this grant that are applicable to future work by you or by other strategy areas? 
+
+Please distinguish between grant-making practice and strategy specific lessons.</inlineHelpText>
+        <label>Lessons Learned</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Pending_Phase__c</fullName>
+        <description>Pending Phase</description>
+        <externalId>false</externalId>
+        <label>Pending Phase</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>StageName</controllingField>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Concept</fullName>
+                    <default>false</default>
+                    <label>Concept</label>
+                </value>
+                <value>
+                    <fullName>Proposal</fullName>
+                    <default>false</default>
+                    <label>Proposal</label>
+                </value>
+                <value>
+                    <fullName>Proposal Summary</fullName>
+                    <default>false</default>
+                    <label>Proposal Summary</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Pending</controllingFieldValue>
+                <valueName>Concept</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Pending</controllingFieldValue>
+                <valueName>Proposal</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Pending</controllingFieldValue>
+                <valueName>Proposal Summary</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Pledge_Payment_Engagement_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Pledge_Payment_Engagement__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Pledge Payment</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Pledge_Payment_Engagement__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Pledge payment engagement - when a grant award is approved and has more than one payment, this date marks the engagement date it will be approved by trustee and/or executive director. This date will be dynamic and change annual as needed.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For requests with more than one payment, this date will be dynamic and change annual as needed.</inlineHelpText>
+        <label>Pledge Payment Engagement</label>
+        <referenceTo>Campaign</referenceTo>
+        <relationshipLabel>Secondary Engagement</relationshipLabel>
+        <relationshipName>Requests</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Post_Grant_Reflection_Complete__c</fullName>
+        <externalId>false</externalId>
+        <label>Post-Grant Reflection Complete?</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No</fullName>
+                    <default>true</default>
+                    <label>No</label>
+                </value>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Post_Grant_Reflection_Due_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Post-Grant Reflection Due Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Post_Grant_Reflection_Required__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Post-Grant Reflection Required</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Primary_Engagement_Name__c</fullName>
+        <description>Displays name of the primary campaign</description>
+        <externalId>false</externalId>
+        <formula>Campaign.Name</formula>
+        <inlineHelpText>Displays name of the primary engagement</inlineHelpText>
+        <label>Primary Engagement Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Engagement__c</fullName>
+        <externalId>false</externalId>
+        <formula>Campaign.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Primary Engagement</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Priority__c</fullName>
+        <externalId>false</externalId>
+        <label>Priority</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>High</fullName>
+                    <default>false</default>
+                    <label>High</label>
+                </value>
+                <value>
+                    <fullName>Medium</fullName>
+                    <default>false</default>
+                    <label>Medium</label>
+                </value>
+                <value>
+                    <fullName>Low</fullName>
+                    <default>false</default>
+                    <label>Low</label>
+                </value>
+                <value>
+                    <fullName>Unknown</fullName>
+                    <default>false</default>
+                    <label>Unknown</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Request_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Request Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Request_Owner__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner.FirstName + &quot; &quot; + Owner.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Request Owner</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>On track</fullName>
+                    <color>#009900</color>
+                    <default>false</default>
+                    <label>On track (Low Risk)</label>
+                </value>
+                <value>
+                    <fullName>Slightly off track</fullName>
+                    <color>#FFCC33</color>
+                    <default>false</default>
+                    <label>Slightly off track (Med Risk)</label>
+                </value>
+                <value>
+                    <fullName>Off track</fullName>
+                    <color>#CC0000</color>
+                    <default>false</default>
+                    <label>Off track (High Risk)</label>
+                </value>
+                <value>
+                    <fullName>Too soon</fullName>
+                    <color>#333333</color>
+                    <default>false</default>
+                    <label>Too soon</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Target_del__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Current Target</label>
+        <referenceTo>Target__c</referenceTo>
+        <relationshipLabel>Opportunities</relationshipLabel>
+        <relationshipName>Opportunities_del</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>TaxStatusID__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Tax Status ID</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>FGM_Base__Tax_Status__c.FGM_Base__Organization__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.FGM_Base__Payee__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>FGM_Base__Tax_Status__c</referenceTo>
+        <relationshipLabel>Opportunities</relationshipLabel>
+        <relationshipName>Opportunities</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
 </CustomObject>

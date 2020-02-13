@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Salesforce-Bulk-Edit</fullName>
     <types>
-        <members>C501_CTRL_MassEditContribPrograms</members>
-        <members>C501_CTRL_MassEditContribPrograms_TEST</members>
         <members>C501_CTRL_MassEditOpportunities</members>
         <members>C501_CTRL_MassEditOpportunities_TEST</members>
         <members>C501_CTRL_MassEditPayments</members>
@@ -19,24 +16,92 @@
         <name>ApexComponent</name>
     </types>
     <types>
-        <members>MassEditContribPrograms</members>
         <members>MassEditOpportunities</members>
         <members>MassEditPayments</members>
         <name>ApexPage</name>
+    </types>
+    <types>
+        <members>GrantManagement</members>
+        <name>ContentAsset</name>
+    </types>
+    <types>
+        <members>Grant_Mass_Edit</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
+        <members>Account.C501_numTaxStatuses__c</members>
+        <members>FGM_Base__Payment__c.Budget__c</members>
+        <members>FGM_Base__Payment__c.C501_Date_of_Status_Check__c</members>
+        <members>FGM_Base__Payment__c.C501_Payee_City__c</members>
+        <members>FGM_Base__Payment__c.C501_Payee_State__c</members>
+        <members>FGM_Base__Payment__c.C501_Payee_Street__c</members>
+        <members>FGM_Base__Payment__c.C501_Payee_Zip__c</members>
+        <members>FGM_Base__Payment__c.C501_Tax_Status__c</members>
+        <members>FGM_Base__Payment__c.C501_numTaxStatuses__c</members>
+        <members>FGM_Base__Payment__c.GIFTS_ID__c</members>
+        <members>FGM_Base__Payment__c.General_Ledger_Code__c</members>
+        <members>FGM_Base__Payment__c.Paid_With_Check_Number__c</members>
+        <members>FGM_Base__Payment__c.Pledged_or_New__c</members>
+        <members>FGM_Base__Payment__c.Target__c</members>
+        <members>Opportunity.Account_Name__c</members>
+        <members>Opportunity.Approval_Date__c</members>
+        <members>Opportunity.Approval_Level__c</members>
+        <members>Opportunity.Approver__c</members>
+        <members>Opportunity.Award_Fiscal_Year__c</members>
+        <members>Opportunity.Budget_del__c</members>
+        <members>Opportunity.C501_Internal_10_Day_Materials_Due_Date__c</members>
+        <members>Opportunity.C501_PipelineKanban__c</members>
+        <members>Opportunity.C501_Request_ID_Case_Safe__c</members>
+        <members>Opportunity.Communications_Restrictions_Notes__c</members>
+        <members>Opportunity.Communications_Restrictions__c</members>
+        <members>Opportunity.Conflict_of_Interest_Notes__c</members>
+        <members>Opportunity.DAF_Payment_Amount__c</members>
+        <members>Opportunity.DAF_Source__c</members>
+        <members>Opportunity.Date_of_DAF_Request__c</members>
+        <members>Opportunity.Declination_Reason__c</members>
+        <members>Opportunity.Equity_Assessment__c</members>
+        <members>Opportunity.Expenditure_Responsibility__c</members>
+        <members>Opportunity.Fiscal_Agent__c</members>
+        <members>Opportunity.GIFTS_ID__c</members>
+        <members>Opportunity.GIFTS_Reference_Nbr__c</members>
+        <members>Opportunity.General_Ledger_Code__c</members>
+        <members>Opportunity.Geographical_Area_Served__c</members>
+        <members>Opportunity.Goal_Progress__c</members>
+        <members>Opportunity.Goals__c</members>
+        <members>Opportunity.Lead_Program__c</members>
+        <members>Opportunity.Lessons_Learned__c</members>
+        <members>Opportunity.Pending_Phase__c</members>
+        <members>Opportunity.Pledge_Payment_Engagement_Name__c</members>
+        <members>Opportunity.Pledge_Payment_Engagement__c</members>
+        <members>Opportunity.Post_Grant_Reflection_Complete__c</members>
+        <members>Opportunity.Post_Grant_Reflection_Due_Date__c</members>
+        <members>Opportunity.Post_Grant_Reflection_Required__c</members>
+        <members>Opportunity.Primary_Engagement_Name__c</members>
+        <members>Opportunity.Primary_Engagement__c</members>
+        <members>Opportunity.Priority__c</members>
+        <members>Opportunity.Request_Date__c</members>
+        <members>Opportunity.Request_Owner__c</members>
+        <members>Opportunity.Status__c</members>
+        <members>Opportunity.Target_del__c</members>
+        <members>Opportunity.TaxStatusID__c</members>
+        <members>Target__c.Budget__c</members>
+        <members>Target__c.Description__c</members>
+        <members>Target__c.Program__c</members>
+        <members>Target__c.Target_Difference__c</members>
+        <members>Target__c.Target_Total_Allocation__c</members>
+        <members>Target__c.Total_Budgeted_Amount__c</members>
+        <members>Target__c.Year__c</members>
+        <members>User.Name__c</members>
+        <name>CustomField</name>
     </types>
     <types>
         <members>PageMessagesConfirm</members>
         <members>PageMessagesError</members>
         <members>PageMessagesFatal</members>
         <members>PageMessagesWarning</members>
+        <members>labelButtonNew</members>
         <members>labelButtonSave</members>
         <members>labelLinkAddMoreRows</members>
-        <members>labelMassEditContribProgramsDateFilterFrom</members>
-        <members>labelMassEditContribProgramsDateFilterTo</members>
-        <members>labelMassEditContribProgramsErrorOnSave</members>
-        <members>labelMassEditContribProgramsHelp</members>
-        <members>labelMassEditContribProgramsSaveSuccess</members>
-        <members>labelMassEditContribProgramsTitle</members>
         <members>labelMassEditOpportunitiesDateFilterFrom</members>
         <members>labelMassEditOpportunitiesDateFilterTo</members>
         <members>labelMassEditOpportunitiesErrorOnSave</members>
@@ -60,10 +125,33 @@
         <name>CustomLabels</name>
     </types>
     <types>
-        <members>FGM_Base__Contributing_Programs__c.MassEditContribPrograms</members>
+        <members>Target__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>Mass_Edit_Payments</members>
+        <members>Mass_Edit_Requests</members>
+        <name>CustomTab</name>
+    </types>
+    <types>
         <members>FGM_Base__Payment__c.MassEditPayments</members>
+        <members>FGM_Base__Payment__c.Mass_Edit_Payments_ViewOnly</members>
         <members>Opportunity.MassEditOpportunities</members>
+        <members>Opportunity.Mass_Edit_Opportunities_ViewOnly</members>
         <name>FieldSet</name>
+    </types>
+    <types>
+        <members>Grant_Mass_Edit_UtilityBar</members>
+        <name>FlexiPage</name>
+    </types>
+    <types>
+        <members>C501_Request_Stages</members>
+        <members>DAF_Source</members>
+        <name>GlobalValueSet</name>
+    </types>
+    <types>
+        <members>Grant_Mass_Edit</members>
+        <name>PermissionSet</name>
     </types>
     <types>
         <members>Bootstrap</members>

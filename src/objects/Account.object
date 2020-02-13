@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>C501_numTaxStatuses__c</fullName>
+        <description>Populated by DLRS &quot;Org - Number of Tax Statuses&quot;; Used in Flow to determine whether or not to look for the latest tax status for a given Payee on a Payment; Not on page layouts</description>
+        <externalId>false</externalId>
+        <label>numTaxStatuses</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+</CustomObject>

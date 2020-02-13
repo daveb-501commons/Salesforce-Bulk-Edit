@@ -9,7 +9,7 @@
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
-            <field>FGM_Base__Request__c</field>
+            <field>FGM_Base__Amount__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
@@ -33,11 +33,231 @@
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
+        <label>Mass Edit Payments</label>
+    </fieldSets>
+    <fieldSets>
+        <fullName>Mass_Edit_Payments_ViewOnly</fullName>
+        <description>View only fields for Mass Edit Payments</description>
+        <displayedFields>
+            <field>FGM_Base__Organization__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
         <displayedFields>
             <field>FGM_Base__Amount__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
-        <label>Mass Edit Payments</label>
+        <displayedFields>
+            <field>Pledged_or_New__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>FGM_Base__Scheduled_Payment_Date__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>FGM_Base__Payment_Date__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>FGM_Base__Payment_Type__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>Mass Edit Payments ViewOnly</label>
     </fieldSets>
+    <fields>
+        <fullName>Budget__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Budget</label>
+        <referenceTo>FGM_Base__Budget__c</referenceTo>
+        <relationshipLabel>Payments</relationshipLabel>
+        <relationshipName>Payments</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>C501_Date_of_Status_Check__c</fullName>
+        <description>Pulls the Date of Status Check value from the linked Tax Status, if there is one; otherwise, left blank</description>
+        <externalId>false</externalId>
+        <formula>IF ( NOT ( ISBLANK ( C501_Tax_Status__c)),
+    C501_Tax_Status__r.FGM_Base__Date_of_Status_Check__c,
+    null)</formula>
+        <inlineHelpText>Formula: displays the date of the status check for the linked Tax Status</inlineHelpText>
+        <label>Date of Status Check</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>C501_Payee_City__c</fullName>
+        <externalId>false</externalId>
+        <formula>FGM_Base__Payee__r.BillingCity</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Payee City</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>C501_Payee_State__c</fullName>
+        <externalId>false</externalId>
+        <formula>FGM_Base__Payee__r.BillingState</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Payee State</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>C501_Payee_Street__c</fullName>
+        <externalId>false</externalId>
+        <formula>FGM_Base__Payee__r.BillingStreet</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Payee Street</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>C501_Payee_Zip__c</fullName>
+        <externalId>false</externalId>
+        <formula>FGM_Base__Payee__r.BillingPostalCode</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Payee Zip</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>C501_Tax_Status__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <description>Lookup from Payment to Tax Status - to be populated via Flow</description>
+        <externalId>false</externalId>
+        <inlineHelpText>To link this Payment to the Payee&apos;s most recent Tax Status, click {button name}</inlineHelpText>
+        <label>Tax Status</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>The linked Tax Status must be related to the Payee&apos;s Organization account</errorMessage>
+            <filterItems>
+                <field>$Source.FGM_Base__Payee__c</field>
+                <operation>equals</operation>
+                <valueField>FGM_Base__Tax_Status__c.FGM_Base__Organization__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>FGM_Base__Tax_Status__c</referenceTo>
+        <relationshipLabel>Payments</relationshipLabel>
+        <relationshipName>Payments</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>C501_numTaxStatuses__c</fullName>
+        <description>Displays the value of the Payee&apos;s numTaxStatuses field, if there is a Payee on the Payment; used in Flow to decide whether or not to get the most recent Tax Status for the Payee; Not on page layouts</description>
+        <externalId>false</externalId>
+        <formula>IF( NOT( ISBLANK( FGM_Base__Payee__c )),
+    FGM_Base__Payee__r.C501_numTaxStatuses__c,
+    null)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>numTaxStatuses</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GIFTS_ID__c</fullName>
+        <description>ID from original GIFTS system.</description>
+        <externalId>false</externalId>
+        <label>GIFTS ID</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>General_Ledger_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>FGM_Base__Request__r.FGM_Base__Lead_Program__r.FGM_Base__Account__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>General Ledger Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Paid_With_Check_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>Paid With Check Number</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Pledged_or_New__c</fullName>
+        <externalId>false</externalId>
+        <label>Pledged or New</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Pledged</fullName>
+                    <default>false</default>
+                    <label>Pledged</label>
+                </value>
+                <value>
+                    <fullName>New</fullName>
+                    <default>false</default>
+                    <label>New</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Target__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Target</label>
+        <referenceTo>Target__c</referenceTo>
+        <relationshipLabel>Payments</relationshipLabel>
+        <relationshipName>Payments</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
 </CustomObject>

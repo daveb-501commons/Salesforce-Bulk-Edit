@@ -38,6 +38,7 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
     
     private C501_MassEdit_SharedCode c501MassEdit_SharedCode;
     private List<String> listStrFields;
+    private List<String> listStrFieldsViewOnly;
     
     global boolean redirect { get; private set; }
     global ID idRedirect { get; private set; }
@@ -63,12 +64,35 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
         if (!listStrFields.contains('Id')) {
             listStrFields.add('Id');
         }
+        if (!listStrFields.contains('FGM_Base__Request__r.Name')) {
+            listStrFields.add('FGM_Base__Request__r.Name');
+        }
         if (!listStrFields.contains('FGM_Base__Request__r.OwnerId')) {
             listStrFields.add('FGM_Base__Request__r.OwnerId');
         }
         if (!listStrFields.contains('FGM_Base__Request__r.FGM_Base__Lead_Program__c')) {
             listStrFields.add('FGM_Base__Request__r.FGM_Base__Lead_Program__c');
         }
+
+        // Get list of fields from fieldset
+        listStrFieldsViewOnly = new List<String>();
+        for (Schema.FieldSetMember f : SObjectType.FGM_Base__Payment__c.FieldSets.Mass_Edit_Payments_ViewOnly.getFields()) {
+            listStrFieldsViewOnly.add(f.getFieldPath());
+        }
+
+        if (!listStrFieldsViewOnly.contains('Id')) {
+            listStrFieldsViewOnly.add('Id');
+        }
+        if (!listStrFieldsViewOnly.contains('FGM_Base__Request__r.Name')) {
+            listStrFieldsViewOnly.add('FGM_Base__Request__r.Name');
+        }
+        if (!listStrFieldsViewOnly.contains('FGM_Base__Request__r.Owner.Name__c')) {
+            listStrFieldsViewOnly.add('FGM_Base__Request__r.Owner.Name__c');
+        }
+        if (!listStrFieldsViewOnly.contains('FGM_Base__Request__r.FGM_Base__Lead_Program__c')) {
+            listStrFieldsViewOnly.add('FGM_Base__Request__r.Lead_Program__c');
+        }
+
     }   
     
     // holds the currently selected Program in the Program dropdown
@@ -132,6 +156,7 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
     global virtual PageReference ChangeOwner() {
         // clear out all state that is specific to the Owner
         listPayments = null;
+        listPaymentsViewOnly = null;
         strSaveResults = null;
         return null;
     }
@@ -142,6 +167,7 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
         listSOPrograms = null;
         listSOOwners = null;
         listPayments = null;
+        listPaymentsViewOnly = null;
         strSaveResults = null;
         return null;
     }
@@ -155,43 +181,44 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
             if (listPayments == null) {
                 FillListPayments();
             }
+
             return listPayments;
         }
         
         set;
     }
+
+    // The list of Payments.
+    global List<FGM_Base__Payment__c> listPaymentsViewOnly {
+        get {
+            if (listPaymentsViewOnly == null) {
+                FillListPaymentsViewOnly();
+            }
+
+            return listPaymentsViewOnly;
+        }
+        
+        set;
+    }
+
+    // helper function that the client can override, to query for the appropriate fields in Payments.
+    global virtual void FillListPaymentsViewOnly() {
+
+        if (programname == null || String.isBlank(programname)) {
+            return;
+        }
+
+        listPaymentsViewOnly = c501MassEdit_SharedCode.listPaymentsByCriteria(listStrFieldsViewOnly, programname, ownerid, paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c, paymentDateFilter.FGM_Base__Payment_Date__c);
+    }
     
     // helper function that the client can override, to query for the appropriate fields in Payments.
     global virtual void FillListPayments() {
 
-        List<Opportunity> listOpportunities = c501MassEdit_SharedCode.listOpportunitiesByCriteria(null, programname, ownerid, paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c, paymentDateFilter.FGM_Base__Payment_Date__c);
-        List<Id> requestIds = new List<Id>();
-        for (Opportunity request :listOpportunities) {
-            requestIds.add(request.Id);
+        if (programname == null || String.isBlank(programname)) {
+            return;
         }
 
-        // if they haven't yet picked a program
-        if (programName == null) return;           
-        
-        // find the existing owners
-        // we need to use dynamic soql to pick up all custom fields we don't know about
-        string strSoql = 
-            'select ' + String.join(listStrFields, ',');
-
-        strSoql += ' from FGM_Base__Payment__c where FGM_Base__Request__c <> null and FGM_Base__Request__c in :requestIds';
-        
-        if (paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c != null) {
-            Date dtStart = paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c;
-            strSoql += ' and FGM_Base__Scheduled_Payment_Date__c >= :dtStart ';
-        }
-        if (paymentDateFilter.FGM_Base__Payment_Date__c != null) {
-            Date dtEnd = paymentDateFilter.FGM_Base__Payment_Date__c;
-            strSoql += ' and FGM_Base__Scheduled_Payment_Date__c <= :dtEnd ';
-        }
-
-        strSoql += ' order by FGM_Base__Request__r.FGM_Base__Lead_Program__r.Name, FGM_Base__Scheduled_Payment_Date__c, FGM_Base__Request__r.Owner.Name ASC NULLS FIRST';
-        
-        listPayments = Database.Query(strSoql); 
+        listPayments = c501MassEdit_SharedCode.listPaymentsByCriteria(listStrFields, programname, ownerid, paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c, paymentDateFilter.FGM_Base__Payment_Date__c);
     }
     
     global Boolean fHasListPayments {
@@ -199,7 +226,13 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
             return listPayments != null && listPayments.size() > 0;
         }
     }     
- 
+
+    global Boolean fHasListPaymentsViewOnly {
+        get {
+            return listPaymentsViewOnly != null && listPaymentsViewOnly.size() > 0;
+        }
+    }     
+    
     global virtual void AddMoreEmptyRowsToPayments() {
         try {
             if (listPayments == null) return;
@@ -242,6 +275,11 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
         return null;
     }
     
+    // New Payment
+    global virtual PageReference NewPayment() {
+        return new Pagereference('/a0C/e?retURL=%2Fa0C%2Fo');
+    }
+
     //save the Payments created or modified
     global virtual PageReference SavePayments() {
         
@@ -262,7 +300,8 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
                     // we couldn't reliably mark dirty records in all scenarios,
                     // so we've decided it is better to always update all records.
                     //if (setPaymentsIdDirty.contains(payment.Id)) 
-                        listPaymentsUpdate.add(payment);
+                    listPaymentsUpdate.add(payment);
+
                 } else if (payment.FGM_Base__Request__r.OwnerId != null) {
                     listPaymentsCreate.add(payment);
                 }
@@ -278,9 +317,13 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
             
             strSaveResults = String.valueOf(listPaymentsCreate.size() + listPaymentsUpdate.size()) + ' ' + Label.labelMassEditPaymentsSaveSuccess;
             ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.CONFIRM, strSaveResults));
+
             // successful save, so clear out dirty list
             setPaymentsIdDirty = null;
+            listPaymentsViewOnly = null;
+
             return null;            
+
         } catch (Exception e) {
             strSaveResults = Label.labelMassEditPaymentsErrorOnSave;
             ApexPages.addMessages(e); 

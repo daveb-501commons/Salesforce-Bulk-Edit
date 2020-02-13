@@ -149,10 +149,10 @@ private with sharing class C501_CTRL_MassEditOpportunities_TEST {
         System.AssertEquals(user.Id, ctrl.ownerid);
         System.Assert(ctrl.listSOPrograms.size() > 1);
         System.AssertEquals(2, ctrl.listSOOwners.size());
-        System.AssertEquals(cRequests, ctrl.listOpportunities.size());
+        System.AssertEquals(cRequests, ctrl.listOpportunities.size() - 1);  // Subtract 1 for the row total that is added by controller
         
         ctrl.AddMoreEmptyRows();
-        System.AssertEquals(cRequests + ctrl.cEmptyOpportunityRecords, ctrl.listOpportunities.size());
+        System.AssertEquals(cRequests + ctrl.cEmptyOpportunityRecords, ctrl.listOpportunities.size() - 1);  // Subtract 1 for the row total that is added by controller
         System.AssertEquals(true, ctrl.fHasListOpportunities);
         System.AssertEquals(0, ctrl.numberOfRecordsDirty);
         System.AssertEquals(null, ctrl.strSaveResults); 

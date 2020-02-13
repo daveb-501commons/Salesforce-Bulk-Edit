@@ -36,7 +36,7 @@ global with sharing class C501_MassEdit_SharedCode {
         List<SelectOption> listSO = new List<SelectOption>();
         listSO.add(new SelectOption('', ''));
 
-        List<Opportunity> listOpportunities = listOpportunitiesByCriteria(null, null, null, startDate, endDate);
+        List<Opportunity> listOpportunities = this.listOpportunitiesByCriteria(null, null, null, startDate, endDate);
         List<Id> requestIds = new List<Id>();
         for (Opportunity request :listOpportunities) {
             requestIds.add(request.Id);
@@ -79,7 +79,7 @@ global with sharing class C501_MassEdit_SharedCode {
         List<SelectOption> listSO = new List<SelectOption>();
         listSO.add(new SelectOption('', ''));
 
-        List<Opportunity> listOpportunities = listOpportunitiesByCriteria(null, programname, null, startDate, endDate);
+        List<Opportunity> listOpportunities = this.listOpportunitiesByCriteria(null, programname, null, startDate, endDate);
         List<Id> requestIds = new List<Id>();
         for (Opportunity request :listOpportunities) {
             requestIds.add(request.Id);
@@ -108,8 +108,49 @@ global with sharing class C501_MassEdit_SharedCode {
         return listSO;
     }
    
-    global List<Opportunity> listOpportunitiesByCriteria(List<String> listStrFields, String programName, Id ownerId, Date startDate, Date endDate) {
+    global List<FGM_Base__Payment__c> listPaymentsByCriteria(List<String> listStrFields, String programName, Id ownerId, Date startDate, Date endDate) {
 
+        List<Opportunity> listOpportunities = this.listOpportunitiesByCriteria(null, programname, ownerid, startDate, endDate);
+        List<Id> requestIds = new List<Id>();
+        for (Opportunity request :listOpportunities) {
+            requestIds.add(request.Id);
+        }
+       
+        // find the existing owners
+        // we need to use dynamic soql to pick up all custom fields we don't know about
+        string strSoql = 
+            'select ' + String.join(listStrFields, ',');
+
+        strSoql += ' from FGM_Base__Payment__c where FGM_Base__Request__c <> null and FGM_Base__Request__c in :requestIds';
+        
+        if (startDate != null) {
+            strSoql += ' and FGM_Base__Scheduled_Payment_Date__c >= :startDate ';
+        }
+        if (endDate != null) {
+            strSoql += ' and FGM_Base__Scheduled_Payment_Date__c <= :endDate ';
+        }
+
+        strSoql += ' order by FGM_Base__Request__r.FGM_Base__Lead_Program__r.Name, FGM_Base__Scheduled_Payment_Date__c, FGM_Base__Request__r.Owner.Name ASC NULLS FIRST';
+        
+        System.debug(LoggingLevel.DEBUG, '*****C501_MassEdit_SharedCode::listPaymentsByCriteria - strSoql: ' + strSoql);
+        List<FGM_Base__Payment__c> payments = Database.Query(strSoql);
+
+        Decimal amountTotal = 0.0;
+        for (FGM_Base__Payment__c payment :payments) {
+                
+            if (listStrFields != null && listStrFields.contains('FGM_Base__Amount__c')) {
+                amountTotal += payment.FGM_Base__Amount__c;
+            }
+        }
+
+        if (amountTotal > 0.0) {
+            payments.add(new FGM_Base__Payment__c(FGM_Base__Amount__c	 = amountTotal));
+        }
+        
+        return payments;
+    }
+
+    global List<Opportunity> listOpportunitiesByCriteria(List<String> listStrFields, String programName, Id ownerId, Date startDate, Date endDate) {
         // Get Contributing Programs
         //
         string strSoql = 
@@ -131,7 +172,7 @@ global with sharing class C501_MassEdit_SharedCode {
         // Get Opportunities
         //
         strSoql = 'select ';
-        if (listStrFields == null) {
+        if (listStrFields == null || listStrFields.isEmpty()) {
             strSoql += ' Id ';
         }
         else {
@@ -148,10 +189,12 @@ global with sharing class C501_MassEdit_SharedCode {
         // Custom Client Filtering - find some way to get this from custom setting
         strSoql += ' and (NOT Name like \'NF %\')';
 
+        System.debug(LoggingLevel.DEBUG, '*****C501_MassEdit_SharedCode::listOpportunitiesByCriteria - strSoql: ' + strSoql);
         List<Opportunity> opportunitiesUnordered = Database.Query(strSoql);
 
         // Order Opportunities based on Scheduled Payment Date
         Set<Id> opportunityIds = new Set<Id>();
+        Decimal amountTotal = 0.0;
         List<Opportunity> opportunitiesOrdered = new List<Opportunity>();
         for (Id requestId :requestIds) {
             for (Opportunity opportunity :opportunitiesUnordered) {
@@ -159,8 +202,16 @@ global with sharing class C501_MassEdit_SharedCode {
                     
                     opportunityIds.add(opportunity.Id);
                     opportunitiesOrdered.add(opportunity);
+
+                    if (listStrFields != null && listStrFields.contains('Amount')) {
+                        amountTotal += opportunity.Amount;
+                    }
                 }
             }
+        }
+
+        if (amountTotal > 0.0) {
+            opportunitiesOrdered.add(new Opportunity(Amount = amountTotal));
         }
 
         return opportunitiesOrdered;

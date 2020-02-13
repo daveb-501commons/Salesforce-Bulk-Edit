@@ -38,12 +38,14 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
     
     private C501_MassEdit_SharedCode c501MassEdit_SharedCode;
     private List<String> listStrFields;
+    private List<String> listStrFieldsViewOnly;
     
     global boolean redirect { get; private set; }
     global ID idRedirect { get; private set; }
     
     // constructor
     global C501_CTRL_MassEditOpportunities() {
+
         redirect = false;
         c501MassEdit_SharedCode = new C501_MassEdit_SharedCode();
         
@@ -62,6 +64,24 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
 
         if (!listStrFields.contains('Id')) {
             listStrFields.add('Id');
+        }
+
+        if (!listStrFields.contains('FGM_Base__Request_Number__c')) {
+            listStrFields.add('FGM_Base__Request_Number__c');
+        }
+
+        // Get list of fields from fieldset for View Only
+        listStrFieldsViewOnly = new List<String>();
+        for (Schema.FieldSetMember f : SObjectType.Opportunity.FieldSets.Mass_Edit_Opportunities_ViewOnly.getFields()) {
+            listStrFieldsViewOnly.add(f.getFieldPath());
+        }
+
+        if (!listStrFieldsViewOnly.contains('Id')) {
+            listStrFieldsViewOnly.add('Id');
+        }
+
+        if (!listStrFieldsViewOnly.contains('FGM_Base__Request_Number__c')) {
+            listStrFieldsViewOnly.add('FGM_Base__Request_Number__c');
         }
     }   
     
@@ -126,6 +146,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
     global virtual PageReference ChangeOwner() {
         // clear out all state that is specific to the Owner
         listOpportunities = null;
+        listOpportunitiesViewOnly = null;
         strSaveResults = null;
         return null;
     }
@@ -136,6 +157,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
         listSOPrograms = null;
         listSOOwners = null;
         listOpportunities = null;
+        listOpportunitiesViewOnly = null;
         strSaveResults = null;
         return null;
     }
@@ -153,6 +175,28 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
         }
         
         set;
+    }
+
+    // The list of Opportunities View Only.
+    global List<Opportunity> listOpportunitiesViewOnly {
+        get {
+            if (listOpportunitiesViewOnly == null) {
+                FillListOpportunitiesViewOnly();
+            }
+            return listOpportunitiesViewOnly;
+        }
+        
+        set;
+    }
+
+    // helper function that the client can override, to query for the appropriate fields in Opportunities.
+    global virtual void FillListOpportunitiesViewOnly() {
+
+        if (programname == null || String.isBlank(programname)) {
+            return;
+        }
+
+        listOpportunitiesViewOnly = c501MassEdit_SharedCode.listOpportunitiesByCriteria(listStrFieldsViewOnly, programname, ownerid, oppDateFilter.FGM_Base__Start_Date__c, oppDateFilter.FGM_Base__End_Date__c);
     }
     
     // helper function that the client can override, to query for the appropriate fields in Opportunities.
@@ -214,9 +258,14 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
         return null;
     }
     
+    // New Opportunity
+    global virtual PageReference NewOpportunity() {
+        return new Pagereference('/006/e?retURL=%2F006%2Fo');
+    }
+
     // Save the Opportunities modified
     global virtual PageReference SaveOpportunities() {
-        
+
         if (listOpportunities == null) return null;
         
         strSaveResults = null;
@@ -250,6 +299,9 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
             // successful save, so clear out dirty list
             setOpportunitiesIdDirty = null;
 
+            // Rebuild report list
+            listOpportunitiesViewOnly = null;
+    
             return null;            
 
         } catch (Exception e) {
@@ -263,6 +315,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
 
     // user wants to add more empty rows to the Opportunities table
     global PageReference AddMoreEmptyRows() {
+
         AddMoreEmptyRowsToOpportunities();
         return null;
     }
