@@ -145,8 +145,8 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
     // the user has changed the Owner dropdown
     global virtual PageReference ChangeOwner() {
         // clear out all state that is specific to the Owner
-        listOpportunities = null;
-        listOpportunitiesViewOnly = null;
+        this.listOpportunities = null;
+        this.listOpportunitiesViewOnly = null;
         strSaveResults = null;
         return null;
     }
@@ -156,22 +156,23 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
         // clear out all state that is specific to the Date
         listSOPrograms = null;
         listSOOwners = null;
-        listOpportunities = null;
-        listOpportunitiesViewOnly = null;
+        this.listOpportunities = null;
+        this.listOpportunitiesViewOnly = null;
         strSaveResults = null;
         return null;
     }
 
     // status string for reporting the results of saving.
     global String strSaveResults { get; set; }
-      
-    // The list of Opportunities.
+
+    // The list of Opportunities Original.
     global List<Opportunity> listOpportunities {
         get {
-            if (listOpportunities == null) {
+            if (this.listOpportunities == null) {
                 FillListOpportunities();
             }
-            return listOpportunities;
+
+            return this.listOpportunities;
         }
         
         set;
@@ -180,10 +181,11 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
     // The list of Opportunities View Only.
     global List<Opportunity> listOpportunitiesViewOnly {
         get {
-            if (listOpportunitiesViewOnly == null) {
+            if (this.listOpportunitiesViewOnly == null) {
                 FillListOpportunitiesViewOnly();
             }
-            return listOpportunitiesViewOnly;
+
+            return this.listOpportunitiesViewOnly;
         }
         
         set;
@@ -196,7 +198,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
             return;
         }
 
-        listOpportunitiesViewOnly = c501MassEdit_SharedCode.listOpportunitiesByCriteria(listStrFieldsViewOnly, programname, ownerid, oppDateFilter.FGM_Base__Start_Date__c, oppDateFilter.FGM_Base__End_Date__c);
+        this.listOpportunitiesViewOnly = c501MassEdit_SharedCode.ListOpportunitiesByCriteria(listStrFieldsViewOnly, programname, ownerid, oppDateFilter.FGM_Base__Start_Date__c, oppDateFilter.FGM_Base__End_Date__c);
     }
     
     // helper function that the client can override, to query for the appropriate fields in Opportunities.
@@ -206,23 +208,23 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
             return;
         }
 
-        listOpportunities = c501MassEdit_SharedCode.listOpportunitiesByCriteria(listStrFields, programname, ownerid, oppDateFilter.FGM_Base__Start_Date__c, oppDateFilter.FGM_Base__End_Date__c);
+        this.listOpportunities = c501MassEdit_SharedCode.ListOpportunitiesByCriteria(listStrFields, programname, ownerid, oppDateFilter.FGM_Base__Start_Date__c, oppDateFilter.FGM_Base__End_Date__c);
     }
-    
-    global Boolean fHasListOpportunities {
+
+    global Boolean fHaslistOpportunities {
         get {
-            return listOpportunities != null && listOpportunities.size() > 0;
+            return this.listOpportunities != null && this.listOpportunities.size() > 0;
         }
     }     
  
     global virtual void AddMoreEmptyRowsToOpportunities() {
         try {
-            if (listOpportunities == null) return;
+            if (this.listOpportunities == null) return;
 
             for (integer i = 0; i < cEmptyOpportunityRecords; i++) { 
                 Opportunity opp = new Opportunity();
                 opp.OwnerId = ownerid;
-                listOpportunities.add(opp);
+                this.listOpportunities.add(opp);
             }
         } catch (Exception e) {
             ApexPages.addMessages(e);            
@@ -235,6 +237,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
             if (setOpportunitiesIdDirty == null) {
                 setOpportunitiesIdDirty = new Set<ID>();
             }
+
             return setOpportunitiesIdDirty;
         }
         set;
@@ -253,8 +256,11 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
     // this gets called whenever a field in the Opportunities datatable is modified.
     // use this to remember which existing Opportunities records have been modified.
     global virtual PageReference OpportunitiesRecordModified() {
+
         String strId = ApexPages.currentPage().getParameters().get('usersIdDirtied');
+
         if (strId != null && strId != '') setOpportunitiesIdDirty.add(strId);
+
         return null;
     }
     
@@ -266,19 +272,31 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
     // Save the Opportunities modified
     global virtual PageReference SaveOpportunities() {
 
-        if (listOpportunities == null) return null;
+        if (this.listOpportunities == null) return null;
         
         strSaveResults = null;
         
         try {
             List<Opportunity> listOpportunitiesUpdate = new List<Opportunity>();
-            
-            for (Opportunity opp : listOpportunities) {
+
+            Map<String, Opportunity> originalOpportunities = new Map<String, Opportunity>();
+            for (Opportunity opp :c501MassEdit_SharedCode.ListOpportunitiesByCriteria(this.listStrFields, this.programname, this.ownerid, this.oppDateFilter.FGM_Base__Start_Date__c, this.oppDateFilter.FGM_Base__End_Date__c)) {
+                originalOpportunities.put(opp.Id, opp);
+            }
+    
+            for (Opportunity opp : this.listOpportunities) {
                 if (opp.Id != null) {
                     // we couldn't reliably mark dirty records in all scenarios,
                     // so we've decided it is better to always update all records.
                     //if (setOpportunitiesIdDirty.contains(opp.Id)) 
-                    listOpportunitiesUpdate.add(opp);
+                    System.debug(LoggingLevel.DEBUG, '*****C501_CTRL_MassEditOpportunities::SaveOpportunities setOpportunitiesIdDirty: ' + this.setOpportunitiesIdDirty);
+
+                    // Compare to original values to see if data changed - this is more reliable than using the dirty flag because someone could change a value then change it back and you don't need to attempt to save that record
+                    if (originalOpportunities.containsKey(opp.Id)) {
+                        if (c501MassEdit_SharedCode.SObjectRecordChanged(SObjectType.Opportunity.FieldSets.MassEditOpportunities.getFields(), originalOpportunities.get(opp.Id), opp)) {
+                            listOpportunitiesUpdate.add(opp);
+                        }
+                    }
                 }
             }
             
@@ -300,7 +318,7 @@ global virtual with sharing class C501_CTRL_MassEditOpportunities {
             setOpportunitiesIdDirty = null;
 
             // Rebuild report list
-            listOpportunitiesViewOnly = null;
+            this.listOpportunitiesViewOnly = null;
     
             return null;            
 

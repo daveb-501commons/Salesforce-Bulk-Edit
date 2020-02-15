@@ -78,10 +78,13 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
         listStrFieldsViewOnly = new List<String>();
         for (Schema.FieldSetMember f : SObjectType.FGM_Base__Payment__c.FieldSets.Mass_Edit_Payments_ViewOnly.getFields()) {
             listStrFieldsViewOnly.add(f.getFieldPath());
-        }
+        }	
 
         if (!listStrFieldsViewOnly.contains('Id')) {
             listStrFieldsViewOnly.add('Id');
+        }
+        if (!listStrFieldsViewOnly.contains('Name')) {
+            listStrFieldsViewOnly.add('Name');
         }
         if (!listStrFieldsViewOnly.contains('FGM_Base__Request__r.Name')) {
             listStrFieldsViewOnly.add('FGM_Base__Request__r.Name');
@@ -208,7 +211,7 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
             return;
         }
 
-        listPaymentsViewOnly = c501MassEdit_SharedCode.listPaymentsByCriteria(listStrFieldsViewOnly, programname, ownerid, paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c, paymentDateFilter.FGM_Base__Payment_Date__c);
+        listPaymentsViewOnly = c501MassEdit_SharedCode.listPaymentsByCriteria(this.listStrFieldsViewOnly, this.programname, this.ownerid, this.paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c, this.paymentDateFilter.FGM_Base__Payment_Date__c);
     }
     
     // helper function that the client can override, to query for the appropriate fields in Payments.
@@ -218,7 +221,7 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
             return;
         }
 
-        listPayments = c501MassEdit_SharedCode.listPaymentsByCriteria(listStrFields, programname, ownerid, paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c, paymentDateFilter.FGM_Base__Payment_Date__c);
+        listPayments = c501MassEdit_SharedCode.listPaymentsByCriteria(this.listStrFields, this.programname, this.ownerid, this.paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c, this.paymentDateFilter.FGM_Base__Payment_Date__c);
     }
     
     global Boolean fHasListPayments {
@@ -288,22 +291,26 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
         strSaveResults = null;
         
         try {
-            // create two lists: one to update and one to insert.
-
             List<FGM_Base__Payment__c> listPaymentsUpdate = new List<FGM_Base__Payment__c>();
-            
-            // Disabled creating new payments on the Mass Edit page - too many required fields so just change new row to New Payment which takes user to a new screen to create payment
-            List<FGM_Base__Payment__c> listPaymentsCreate = new List<FGM_Base__Payment__c>();
 
+            Map<String, FGM_Base__Payment__c> originalPayments = new Map<String, FGM_Base__Payment__c>();
+            for (FGM_Base__Payment__c payment :c501MassEdit_SharedCode.listPaymentsByCriteria(this.listStrFields, this.programname, this.ownerid, this.paymentDateFilter.FGM_Base__Scheduled_Payment_Date__c, this.paymentDateFilter.FGM_Base__Payment_Date__c)) {
+                originalPayments.put(payment.Id, payment);
+            }
+            
             for (FGM_Base__Payment__c payment : listPayments) {
                 if (payment.Id != null) {
                     // we couldn't reliably mark dirty records in all scenarios,
                     // so we've decided it is better to always update all records.
                     //if (setPaymentsIdDirty.contains(payment.Id)) 
-                    listPaymentsUpdate.add(payment);
+                    System.debug(LoggingLevel.DEBUG, '*****C501_CTRL_MassEditPayments::SavePayments setPaymentsIdDirty: ' + setPaymentsIdDirty);
 
-                } else if (payment.FGM_Base__Request__r.OwnerId != null) {
-                    listPaymentsCreate.add(payment);
+                    // Compare to original values to see if data changed - this is more reliable than using the dirty flag because someone could change a value then change it back and you don't need to attempt to save that record
+                    if (originalPayments.containsKey(payment.Id)) {
+                        if (c501MassEdit_SharedCode.SObjectRecordChanged(SObjectType.FGM_Base__Payment__c.FieldSets.MassEditPayments.getFields(), originalPayments.get(payment.Id), payment)) {
+                            listPaymentsUpdate.add(payment);
+                        }
+                    }
                 }
             }
             
@@ -311,11 +318,7 @@ global virtual with sharing class C501_CTRL_MassEditPayments {
                 update listPaymentsUpdate;
             }
            
-            /*if (!listPaymentsCreate.isEmpty()) {
-                insert listPaymentsCreate;
-            }*/
-            
-            strSaveResults = String.valueOf(listPaymentsCreate.size() + listPaymentsUpdate.size()) + ' ' + Label.labelMassEditPaymentsSaveSuccess;
+            strSaveResults = listPaymentsUpdate.size() + ' ' + Label.labelMassEditPaymentsSaveSuccess;
             ApexPages.addMessage(new ApexPages.message(ApexPages.Severity.CONFIRM, strSaveResults));
 
             // successful save, so clear out dirty list

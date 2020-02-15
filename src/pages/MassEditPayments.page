@@ -137,7 +137,7 @@
                     <!-- Add Admin Fields -->
                     <apex:column styleClass="myTD reference" >
                         <apex:facet name="header">Payment</apex:facet>
-                        <apex:outputLink value="/{!payment.Id}" rendered="{!NOT(payment.Id == '')}">Go To</apex:outputLink>
+                        <apex:outputLink value="/{!payment.Id}" rendered="{!NOT(payment.Id == '')}">{!payment.Name}</apex:outputLink>
                     </apex:column> 
                     <apex:column styleClass="myTD reference" >
                         <apex:facet name="header">Program</apex:facet>
@@ -190,11 +190,11 @@
                     <!-- Add Admin Fields -->
                     <apex:column styleClass="myTD reference" >
                         <apex:facet name="header">Program</apex:facet>
-                        <apex:inputField value="{!payment.FGM_Base__Request__r.FGM_Base__Lead_Program__c}" styleClass="lookupInput" required="false" />
+                        <apex:inputField value="{!payment.FGM_Base__Request__r.FGM_Base__Lead_Program__c}" styleClass="lookupInput" required="false" rendered="{!NOT(payment.Id == '')}"/>
                     </apex:column> 
                     <apex:column styleClass="myTD reference" >
                         <apex:facet name="header">Request Owner Name</apex:facet>
-                        <apex:inputField value="{!payment.FGM_Base__Request__r.OwnerId}" styleClass="lookupInput" required="false" />
+                        <apex:inputField value="{!payment.FGM_Base__Request__r.OwnerId}" styleClass="lookupInput" required="false" rendered="{!NOT(payment.Id == '')}"/>
                     </apex:column> 
 
                     <!-- Add Field Set Fields -->
@@ -220,7 +220,7 @@
 
                     <apex:column styleClass="myTD reference" >
                         <apex:facet name="header">Request Title</apex:facet>
-                        <apex:outputText value="{!payment.FGM_Base__Request__r.Name}"/>
+                        <apex:outputText value="{!payment.FGM_Base__Request__r.Name}" rendered="{!NOT(payment.Id == '')}"/>
                     </apex:column> 
 
                 </apex:dataTable>

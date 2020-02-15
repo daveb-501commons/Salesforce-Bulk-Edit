@@ -30,6 +30,21 @@
 
 global with sharing class C501_MassEdit_SharedCode { 
 
+    public Boolean SObjectRecordChanged(List<Schema.FieldSetMember> objectFields, SObject originalRecord, SObject changeRecord) {
+
+        for (Schema.FieldSetMember fieldName : objectFields) {
+
+            System.debug(LoggingLevel.DEBUG, '*****C501_MassEdit_SharedCode::OpportunityRecordChanged fieldName: ' + fieldName.getFieldPath() + ' Original: ' + originalRecord.get(fieldName.getFieldPath()) + ' Change: ' + changeRecord.get(fieldName.getFieldPath()));
+            if (originalRecord.get(fieldName.getFieldPath()) <> changeRecord.get(fieldName.getFieldPath())) {
+                System.debug(LoggingLevel.DEBUG, '*****C501_MassEdit_SharedCode::OpportunityRecordChanged Changed Detected');
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // the list of Programs for Requests
     global List<SelectOption> listSOProgramsWithRequests(Date startDate, Date endDate) {
 
@@ -144,7 +159,7 @@ global with sharing class C501_MassEdit_SharedCode {
         }
 
         if (amountTotal > 0.0) {
-            payments.add(new FGM_Base__Payment__c(FGM_Base__Amount__c	 = amountTotal));
+            payments.add(new FGM_Base__Payment__c(FGM_Base__Amount__c = amountTotal));
         }
         
         return payments;
